@@ -113,11 +113,11 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'AdminLTE Preloader Image',
-            'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'path' => 'images/Logo SinPicos.png',
+            'alt' => 'SinPicos',
+            'effect' => 'animation__shake ultra-slow',
+            'width' => '140px',
+            'height' => '80px',
         ],
     ],
 
