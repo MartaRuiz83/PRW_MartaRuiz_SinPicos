@@ -335,10 +335,10 @@ return [
         ['header' => 'account_settings'],
         [
             'text' => 'Usuarios',
-            'url' => 'admin/settings',
+            'url' => 'admin/users',
             'icon' => 'fas fa-fw fa-users',
+            'active' => ['admin/users*'],
         ],
-
        
         ['header' => 'labels'],
         [

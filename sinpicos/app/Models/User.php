@@ -29,7 +29,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'biography', // nuevo campo
+        'rol',            
+        'tipo_diabetes',  
     ];
 
     /**
