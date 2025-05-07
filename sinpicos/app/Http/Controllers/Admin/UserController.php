@@ -42,13 +42,21 @@ class UserController extends Controller
             ->with('success', 'Usuario creado correctamente.');
     }
 
-    // 4. Formulario de edición
+  
+    // 4. Ver la información de un usuario
+    public function show(User $user)
+    {
+        return view('admin.users.show', compact('user'));
+    }
+
+
+    // 5. Formulario de edición
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));
     }
 
-    // 5. Actualizar usuario
+    // 6. Actualizar usuario
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
@@ -72,7 +80,7 @@ class UserController extends Controller
             ->with('success', 'Usuario actualizado correctamente.');
     }
 
-    // 6. Borrar usuario
+    // 7. Borrar usuario
     public function destroy(User $user)
     {
         $user->delete();
