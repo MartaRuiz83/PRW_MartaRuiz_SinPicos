@@ -10,7 +10,7 @@
         <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary rounded-pill me-2">
             Volver
         </a>
-        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary rounded-pill">
+        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning rounded-pill">
             Editar
         </a>
     </div>
