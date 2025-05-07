@@ -27,9 +27,11 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
 
         return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
+            'name'           => $input['name'],
+            'email'          => $input['email'],
+            'password'       => Hash::make($input['password']),
+            'tipo_diabetes'  => $input['tipo_diabetes'],  // ← así lo agregas
+            // rol ya viene por defecto de la BD
         ]);
     }
 }
