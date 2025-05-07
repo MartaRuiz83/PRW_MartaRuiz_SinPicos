@@ -115,7 +115,7 @@ return [
         'img' => [
             'path' => 'images/Logo SinPicos.png',
             'alt' => 'SinPicos',
-            'effect' => 'animation__shake ultra-slow',
+            'effect' => 'animation__shake slowest',
             'width' => '140px',
             'height' => '80px',
         ],
@@ -337,53 +337,12 @@ return [
         ],
         ['header' => 'account_settings'],
         [
-            'text' => 'profile',
+            'text' => 'Usuarios',
             'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-users',
         ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
-        ],
+
+       
         ['header' => 'labels'],
         [
             'text' => 'important',
