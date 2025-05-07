@@ -19,6 +19,7 @@
                     @csrf
                     @method('PUT')
 
+                    {{-- Nombre --}}
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-primary text-white">
@@ -36,6 +37,7 @@
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
+                    {{-- Email --}}
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-info text-white">
@@ -53,40 +55,46 @@
                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
+                    {{-- Rol --}}
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-success text-white">
                                 <i class="fas fa-user-cog"></i>
                             </span>
                         </div>
-                        <input
-                            type="text"
+                        <select
                             name="rol"
                             class="form-control @error('rol') is-invalid @enderror"
-                            placeholder="Rol"
-                            value="{{ old('rol', $user->rol) }}"
                             required
                         >
+                            <option value="" disabled {{ old('rol', $user->rol) ? '' : 'selected' }}>Selecciona un rol</option>
+                            <option value="Usuario"       {{ old('rol', $user->rol)=='Usuario'       ? 'selected' : '' }}>Usuario</option>
+                            <option value="Administrador" {{ old('rol', $user->rol)=='Administrador' ? 'selected' : '' }}>Administrador</option>
+                        </select>
                         @error('rol')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
+                    {{-- Tipo de Diabetes --}}
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-warning text-white">
                                 <i class="fas fa-heartbeat"></i>
                             </span>
                         </div>
-                        <input
-                            type="text"
+                        <select
                             name="tipo_diabetes"
                             class="form-control @error('tipo_diabetes') is-invalid @enderror"
-                            placeholder="Tipo de Diabetes"
-                            value="{{ old('tipo_diabetes', $user->tipo_diabetes) }}"
                             required
                         >
+                            <option value="" disabled {{ old('tipo_diabetes', $user->tipo_diabetes) ? '' : 'selected' }}>Selecciona tipo de diabetes</option>
+                            <option value="Tipo 1"       {{ old('tipo_diabetes', $user->tipo_diabetes)=='Tipo 1'       ? 'selected' : '' }}>Tipo 1</option>
+                            <option value="Tipo 2"       {{ old('tipo_diabetes', $user->tipo_diabetes)=='Tipo 2'       ? 'selected' : '' }}>Tipo 2</option>
+                            <option value="Gestacional" {{ old('tipo_diabetes', $user->tipo_diabetes)=='Gestacional' ? 'selected' : '' }}>Gestacional</option>
+                        </select>
                         @error('tipo_diabetes')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
+                    {{-- Contraseña --}}
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-danger text-white">
@@ -102,6 +110,7 @@
                         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
+                    {{-- Confirmar Contraseña --}}
                     <div class="input-group mb-4">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-secondary text-white">
@@ -116,6 +125,7 @@
                         >
                     </div>
 
+                    {{-- Botones --}}
                     <div class="d-flex justify-content-between">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save mr-1"></i> Guardar
