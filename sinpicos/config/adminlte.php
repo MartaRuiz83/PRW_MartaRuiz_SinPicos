@@ -81,18 +81,15 @@ return [
     | For detailed instructions you can look the auth logo section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Basic-Configuration
     |
-    */
+    */  
 
-    'auth_logo' => [
-        'enabled' => false,
-        'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'Auth Logo',
-            'class' => '',
-            'width' => 50,
-            'height' => 50,
-        ],
-    ],
+        'logo'              => '<span style="color:#4357e4; font-weight:700; font-style:italic">SinPicos</span>',          
+        'logo_img'          => 'images/Logo SinPicos.png',           
+        'logo_img_class'    => 'brand-image img-circle elevation-3', 
+        'logo_img_xl'       => null,
+        'logo_img_xl_class' => 'brand-image-xs',
+        'logo_img_alt'      => 'Logo SinPicos',                     
+
 
     /*
     |--------------------------------------------------------------------------
@@ -196,7 +193,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-light-primary elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
