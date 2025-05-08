@@ -17,7 +17,11 @@ Route::middleware(['auth', 'verified'])
         return view('admin.dashboard'); 
     })->name('dashboard');             // Será 'admin.dashboard'
 
-    // Todas estas rutas pasarán a llamarse 'admin.users.index', 'admin.users.create', etc.
+    // Rutas Usuarios
     Route::resource('users', UserController::class);
+
+    // Rutas Ingredientes
+    Route::resource('ingredients', App\Http\Controllers\Admin\IngredientController::class);
+
 
 });

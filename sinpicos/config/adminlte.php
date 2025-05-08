@@ -339,6 +339,12 @@ return [
             'icon' => 'fas fa-fw fa-users',
             'active' => ['admin/users*'],
         ],
+        [
+            'text' => 'Ingredientes',
+            'url' => 'admin/ingredients', 
+            'icon' => 'fas fa-fw fa-carrot',
+            'active' => ['admin/ingredients*'],
+        ],
        
         ['header' => 'labels'],
         [
