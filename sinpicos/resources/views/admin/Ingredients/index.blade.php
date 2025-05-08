@@ -45,10 +45,17 @@
                         <td>{{ $ingredient->fats }}</td>
                         <td>{{ $ingredient->calories }}</td>
                         <td class="text-center">
+                            {{-- Ver --}}
+                            <a href="{{ route('admin.ingredients.show', $ingredient) }}"
+                               class="text-info me-2" title="Ver detalle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {{-- Editar --}}
                             <a href="{{ route('admin.ingredients.edit', $ingredient) }}"
                                class="text-warning me-2" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            {{-- Eliminar --}}
                             <form action="{{ route('admin.ingredients.destroy', $ingredient) }}"
                                   method="POST" style="display:inline"
                                   onsubmit="return confirm('¿Eliminar ingrediente?');">

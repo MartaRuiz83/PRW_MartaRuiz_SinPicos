@@ -13,11 +13,9 @@ class IngredientController extends Controller
      */
     public function index()
     {
-        // Obtiene 10 por página (puedes cambiar el número)
         $ingredients = Ingredient::orderBy('id', 'desc')
                                  ->paginate(10);
 
-        // Pasa la colección a la vista
         return view('admin.ingredients.index', compact('ingredients'));
     }
 
@@ -34,7 +32,6 @@ class IngredientController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación
         $data = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
             'carbohydrates' => ['nullable', 'numeric', 'min:0'],
@@ -43,12 +40,19 @@ class IngredientController extends Controller
             'calories'      => ['nullable', 'integer', 'min:0'],
         ]);
 
-        // Creación
         Ingredient::create($data);
 
         return redirect()
             ->route('admin.ingredients.index')
             ->with('success', 'Ingrediente creado correctamente.');
+    }
+
+    /**
+     * Mostrar detalle de un ingrediente.
+     */
+    public function show(Ingredient $ingredient)
+    {
+        return view('admin.ingredients.show', compact('ingredient'));
     }
 
     /**
