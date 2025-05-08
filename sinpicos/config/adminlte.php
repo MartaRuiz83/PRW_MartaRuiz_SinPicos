@@ -351,6 +351,13 @@ return [
             'icon' => 'fas fa-fw fa-lightbulb',
             'active' => ['admin/tips*'],
         ],
+        [
+            'text'   => 'Home',
+            'route'  => 'admin.home',        
+            'icon'   => 'fas fa-fw fa-home',
+            'active' => ['admin/home*'],    
+        ],
+        
        
         ['header' => 'labels'],
         [
