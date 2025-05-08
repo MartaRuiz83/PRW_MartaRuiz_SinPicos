@@ -13,7 +13,7 @@ class IngredientController extends Controller
      */
     public function index()
     {
-        $ingredients = Ingredient::orderBy('id', 'desc')
+        $ingredients = Ingredient::orderBy('id', 'asc')
                                  ->paginate(10);
 
         return view('admin.ingredients.index', compact('ingredients'));

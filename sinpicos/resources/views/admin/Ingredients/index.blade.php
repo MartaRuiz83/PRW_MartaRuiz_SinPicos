@@ -6,14 +6,15 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="text-dark font-weight-bold">Ingredientes</h1>
-    <a href="{{ route('admin.users.create') }}"
+    <a href="{{ route('admin.ingredients.create') }}"
        class="btn"
        style="background-color: #559ae4; color: #fff; border: none;
               width: 40px; height: 40px; display: flex;
               align-items: center; justify-content: center;
               border-radius: 4px;"
-       title="Nuevo Usuario">
-        <i class="fas fa-user-plus"></i>
+       title="Nuevo Ingrediente">
+        <i class="fas fa-carrot" style="font-size: 1.25rem;"></i>
+        <i class="fas fa-plus"></i>
     </a>
 </div>
 @stop
