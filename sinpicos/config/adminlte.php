@@ -345,6 +345,12 @@ return [
             'icon' => 'fas fa-fw fa-carrot',
             'active' => ['admin/ingredients*'],
         ],
+        [
+            'text' => 'Tips',
+            'url' => 'admin/tips', 
+            'icon' => 'fas fa-fw fa-lightbulb',
+            'active' => ['admin/tips*'],
+        ],
        
         ['header' => 'labels'],
         [
