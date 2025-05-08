@@ -346,16 +346,16 @@ return [
             'active' => ['admin/ingredients*'],
         ],
         [
-            'text' => 'Tips',
-            'url' => 'admin/tips', 
+            'text' => 'Recomendaciones',
+            'url' => 'admin/recomendations', 
             'icon' => 'fas fa-fw fa-lightbulb',
-            'active' => ['admin/tips*'],
+            'active' => ['admin/recomendations*'],
         ],
         [
             'text'   => 'Home',
-            'route'  => 'admin.home',        
+            'route'  => 'home',        
             'icon'   => 'fas fa-fw fa-home',
-            'active' => ['admin/home*'],    
+            'active' => ['home*'],    
         ],
         
        

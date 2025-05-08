@@ -13,7 +13,15 @@ class Ingredient extends Model
         'proteins',
         'fats',
         'calories',
+        'active',
     ];
+
+    public function meals()
+    {
+        return $this->belongsToMany(Meal::class)
+                    ->withPivot('quantity')
+                    ->withTimestamps();
+    }
 
     // Si quieres, puedes definir casts para que siempre lleguen en el tipo adecuado
     protected $casts = [
