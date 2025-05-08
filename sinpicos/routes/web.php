@@ -2,15 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MealController as FrontMealController;
+use App\Http\Controllers\MealController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\IngredientController;
-use App\Http\Controllers\Admin\MealController as AdminMealController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
+|
+| Aquí definimos todas las rutas de la aplicación.
+|
 */
 
 // ——————————————————————————————————————————————————————————
@@ -27,20 +29,20 @@ Route::get('/', fn() => redirect()->route('login'));
 //    - /home         → listado público de comidas
 //    - /meals/create → formulario para crear comida
 //    - POST /meals   → guardar en BD
-Route::middleware(['auth','verified'])->group(function () {
-    Route::get('/home',         [HomeController::class,     'index'])
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/home',           [HomeController::class, 'index'])
          ->name('home');
 
-    Route::get('/meals/create', [FrontMealController::class,'create'])
+    Route::get('/meals/create',   [MealController::class, 'create'])
          ->name('meals.create');
 
-    Route::post('/meals',       [FrontMealController::class,'store'])
+    Route::post('/meals',         [MealController::class, 'store'])
          ->name('meals.store');
 });
 
 // 3) RUTAS DEL PANEL DE ADMIN (AdminLTE)
 //    Todas estas usan prefijo /admin y nombre admin.*
-Route::middleware(['auth','verified'])
+Route::middleware(['auth', 'verified'])
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {
@@ -61,6 +63,6 @@ Route::middleware(['auth','verified'])
 
     // 3.5) CRUD de Comidas (index, show, edit, update, destroy)
     //      Creamos y guardamos en el Front, por eso excluimos create/store aquí
-    Route::resource('meals', AdminMealController::class)
-         ->except(['create','store']);
+    Route::resource('meals', MealController::class)
+         ->except(['create', 'store']);
 });
