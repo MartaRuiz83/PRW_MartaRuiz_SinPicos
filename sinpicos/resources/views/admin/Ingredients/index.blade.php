@@ -6,10 +6,14 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="text-dark font-weight-bold">Ingredientes</h1>
-    <a href="{{ route('admin.ingredients.create') }}" 
-       class="btn btn-primary btn-sm"
-       title="Nuevo ingrediente">
-        <i class="fas fa-plus"></i> Nuevo
+    <a href="{{ route('admin.users.create') }}"
+       class="btn"
+       style="background-color: #559ae4; color: #fff; border: none;
+              width: 40px; height: 40px; display: flex;
+              align-items: center; justify-content: center;
+              border-radius: 4px;"
+       title="Nuevo Usuario">
+        <i class="fas fa-user-plus"></i>
     </a>
 </div>
 @stop
@@ -47,12 +51,12 @@
                         <td class="text-center">
                             {{-- Ver --}}
                             <a href="{{ route('admin.ingredients.show', $ingredient) }}"
-                               class="text-info me-2" title="Ver detalle">
+                               class="text-info mr-3" title="Ver detalle">
                                 <i class="fas fa-eye"></i>
                             </a>
                             {{-- Editar --}}
                             <a href="{{ route('admin.ingredients.edit', $ingredient) }}"
-                               class="text-warning me-2" title="Editar">
+                               class="text-warning mr-3" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
                             {{-- Eliminar --}}
