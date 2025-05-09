@@ -28,7 +28,7 @@ class MealController extends Controller
     public function create()
     {
         $ingredients = Ingredient::orderBy('name')->get();
-        return view('meals.create', compact('ingredients'));
+        return view('admin.meals.create', compact('ingredients'));
     }
 
     /**
