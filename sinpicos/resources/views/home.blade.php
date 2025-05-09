@@ -65,17 +65,17 @@
             {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
           </p>
           @php
-            $c=$p=$f=0;
+            $c = $p = $f = 0;
             foreach($meal->ingredients as $ing) {
-              $q=$ing->pivot->quantity;
-              $c+=($ing->carbohydrates_per_100g??0)*$q/100;
-              $p+=($ing->proteins_per_100g??0)*$q/100;
-              $f+=($ing->fats_per_100g??0)*$q/100;
+              $q = $ing->pivot->quantity;
+              $c += ($ing->carbohydrates ?? 0) * $q / 100;
+              $p += ($ing->proteins      ?? 0) * $q / 100;
+              $f += ($ing->fats          ?? 0) * $q / 100;
             }
           @endphp
           <p class="mb-0 text-muted">
             Carbos: {{ round($c,1) }} g |
-            Prot: {{ round($p,1) }} g |
+            Prot:   {{ round($p,1) }} g |
             Grasas: {{ round($f,1) }} g
           </p>
         </div>
