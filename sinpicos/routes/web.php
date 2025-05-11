@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified'])
 
     // 3.2) Home dentro de /admin/home
     Route::get('/home', function () {
-        return view('admin.home');
+        return view('home');
     })->name('home');
 
     // 3.3) CRUD Usuarios
