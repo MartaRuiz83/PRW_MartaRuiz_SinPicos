@@ -7,17 +7,43 @@
 
 
 <div class="container py-4">
-  <h1 class="h3 mb-4">Bienvenido, {{ Auth::user()->name }}.</h1>
-  <a href="{{ route('home', ['date' => $dates['yesterday']->format("Y-m-d")]) }}">
-  <i class="ri-arrow-left-line"></i>
-</a>
-  <p class="text-muted mb-4">Datos de {{ $dates["today"]->format("d-m-Y") }}</p>
-<div class="container py-4">
-  @if ($dates['tomorrow'] != null)
-  <a href="{{ route('home', ['date' => $dates['tomorrow']->format("Y-m-d")]) }}">
-  <i class="ri-arrow-right-line"></i>
-</a>
-  @endif
+  <div class="card shadow-sm rounded-lg border-0">
+    <div class="card-body d-flex align-items-center justify-content-between">
+      
+      <!-- Flecha al día anterior -->
+      <a 
+        href="{{ route('home', ['date' => $dates['yesterday']->format('Y-m-d')]) }}" 
+        class="btn btn-outline-secondary btn-lg me-3" 
+        title="Día anterior"
+      >
+        <i class="ri-arrow-left-line fs-4"></i>
+      </a>
+
+      <!-- Centramos nombre y fecha -->
+      <div class="text-center flex-grow-1">
+        <h1 class="h3 fw-bold mb-1">
+          Bienvenido, {{ Auth::user()->name }}.
+        </h1>
+        <p class="text-muted mb-0">
+          Datos de {{ $dates['today']->format('d-m-Y') }}
+        </p>
+      </div>
+
+      <!-- Flecha al día siguiente (solo si existe) -->
+      @if ($dates['tomorrow'])
+      <a 
+        href="{{ route('home', ['date' => $dates['tomorrow']->format('Y-m-d')]) }}" 
+        class="btn btn-outline-secondary btn-lg ms-3" 
+        title="Siguiente día"
+      >
+        <i class="ri-arrow-right-line fs-4"></i>
+      </a>
+      @endif
+
+    </div>
+  </div>
+</div>
+
 
   
 
