@@ -1,31 +1,53 @@
 <?php
 
-// routes/web.php
-
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\IngredientController;
+use App\Http\Controllers\Admin\RecomendationController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Aquí registramos las rutas web de tu aplicación.
+|
+*/
+
+// 1) La raíz redirige al login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Jetstream/Fortify (login, register…) ya vienen automáticamente
+// 2) Ruta “global” Dashboard (sin prefijo admin), accesible con route('dashboard')
+Route::middleware(['auth', 'verified'])
+     ->get('/dashboard', function () {
+         return view('admin.dashboard');
+     })
+     ->name('dashboard');
 
-Route::middleware(['auth','verified'])
+// 3) Todas las rutas /admin/* con middleware auth+verified y nombre admin.*
+Route::middleware(['auth', 'verified'])
      ->prefix('admin')
      ->name('admin.')
-     ->group(function(){
+     ->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', function(){
+    // 3.1) Dashboard dentro de /admin/dashboard
+    Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
-    // Home dentro de Admin (solo tras login)
-    Route::get('/home', function(){
-        return view('home');
+    // 3.2) Home dentro de /admin/home
+    Route::get('/home', function () {
+        return view('admin.home');
     })->name('home');
 
-    // Recursos
-    Route::resource('users',       App\Http\Controllers\Admin\UserController::class);
-    Route::resource('ingredients', App\Http\Controllers\Admin\IngredientController::class);
+    // 3.3) CRUD Usuarios
+    Route::resource('users', UserController::class);
+
+    // 3.4) CRUD Ingredientes
+    Route::resource('ingredients', IngredientController::class);
+
+    // 3.5) CRUD Recomendaciones
+    Route::resource('recomendations', RecomendationController::class);
 });
