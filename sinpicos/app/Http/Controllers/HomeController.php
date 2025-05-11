@@ -11,7 +11,8 @@ class HomeController extends Controller
 {
 
    $meals = Meal::with('ingredients')
-    ->where('user_id', auth()->id())       // filtra directamente por la FK
+    ->where('user_id', auth()->id()) 
+    ->whereDate('date', now()->format('Y-m-d'))
     ->orderByDesc('date')
     ->orderByDesc('time')
     ->get();
