@@ -44,29 +44,38 @@
   </div>
 </div>
 
-<h2 class="h5 mb-3">Consejos del día</h2>
-@foreach($tips as $tip)
-<div class="container py-4"></div>
-  <div class="card shadow-sm rounded-lg border-0">
-    <div class="card-body">
-      <p class="mb-0">{{ $tip->recomendation->titulo}}</p>
-      <p class="mb-0 text-muted">{{ $tip->recomendation->descripcion}}</p>
-     
-      <form action="{{ route('admin.tips.showed', $tip) }}"
-            method="POST">
-            @csrf
-        <button type="submit"
-                class="btn btn-link text-danger p-0"
-                title="Eliminar">
-          <i class="ri-delete-bin-2-line fs-4"></i>
-        </button>
-      </form>
-    </div>
+<div class="container py-4">
+  <h2 class="h5 mb-4" style="color: #7d3ced;">
+  Consejos del día
+</h2>
+
+
+  <div class="row g-3">
+    @foreach($tips as $tip)
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-2">
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex align-items-center mb-2">
+                <i class="ri-check-line text-success fs-3 me-2"></i>
+                <h3 class="h6 mb-0">{{ $tip->recomendation->titulo }}</h3>
+              </div>
+              <p class="small text-muted mb-0">
+                {{ $tip->recomendation->descripcion }}
+              </p>
+            </div>
+            <form action="{{ route('admin.tips.showed', $tip) }}" method="POST" class="mt-3 text-end">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-outline-success">
+                Marcar como visto
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    @endforeach
   </div>
-@endforeach
-
-
-
+</div>
 
   {{-- Resumen del Día --}}
   <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
