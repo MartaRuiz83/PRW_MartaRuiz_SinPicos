@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Meal;
 use Illuminate\Http\Request;
+use DateTimeImmutable;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index($date=null)
 {
+    $now = new DateTimeImmutable('today');
+
+    if ($date) {
+        $date = new DateTimeImmutable($date);
+    } else {
+        $date = $now;
+    }
 
    $meals = Meal::with('ingredients')
     ->where('user_id', auth()->id()) 
-    ->whereDate('date', now()->format('Y-m-d'))
+    ->whereDate('date', $date->format('Y-m-d'))
     ->orderByDesc('date')
     ->orderByDesc('time')
     ->get();
@@ -30,7 +38,13 @@ class HomeController extends Controller
     }
 }
 
-    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats'));
+    $dates = [
+        'today' => $date,
+        'yesterday' => $date->modify('-1 day'),
+        'tomorrow' =>($date < $now)? $date->modify("+1 day"):null,
+    ];
+
+    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats','dates'));
 }
 
 }

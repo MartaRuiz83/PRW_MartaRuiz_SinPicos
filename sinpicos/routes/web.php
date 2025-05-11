@@ -30,7 +30,7 @@ Route::get('/', fn() => redirect()->route('login'));
 //    - /meals/create → formulario para crear comida
 //    - POST /meals   → guardar en BD
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/home',           [HomeController::class, 'index'])
+    Route::get('/home/{date?}',           [HomeController::class, 'index'])
          ->name('home');
 
     Route::get('/meals/create',   [MealController::class, 'create'])
@@ -51,18 +51,11 @@ Route::middleware(['auth', 'verified'])
     Route::get('/dashboard', fn() => view('admin.dashboard'))
          ->name('dashboard');
 
-    // 3.2) “Home” dentro del menú de AdminLTE
-    Route::get('/home', fn() => view('admin.home'))
-         ->name('home');
-
     // 3.3) CRUD de Usuarios
     Route::resource('users', UserController::class);
 
     // 3.4) CRUD de Ingredientes
     Route::resource('ingredients', IngredientController::class);
-
-    // 3.5) CRUD de Comidas (index, show, edit, update, destroy)
-    //      Creamos y guardamos en el Front, por eso excluimos create/store aquí
     Route::resource('meals', MealController::class)
          ->except(['create', 'store']);
 });

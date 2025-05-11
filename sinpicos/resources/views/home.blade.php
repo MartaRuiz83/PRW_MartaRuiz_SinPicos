@@ -2,7 +2,26 @@
 @extends('layouts.app')
 
 @section('content')
+
+
+
+
 <div class="container py-4">
+  <h1 class="h3 mb-4">Bienvenido, {{ Auth::user()->name }}.</h1>
+  <a href="{{ route('home', ['date' => $dates['yesterday']->format("Y-m-d")]) }}">
+  <i class="ri-arrow-left-line"></i>
+</a>
+  <p class="text-muted mb-4">Datos de {{ $dates["today"]->format("d-m-Y") }}</p>
+<div class="container py-4">
+  @if ($dates['tomorrow'] != null)
+  <a href="{{ route('home', ['date' => $dates['tomorrow']->format("Y-m-d")]) }}">
+  <i class="ri-arrow-right-line"></i>
+</a>
+  @endif
+
+  
+
+
   {{-- Resumen del Día --}}
   <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
     <div class="col">
