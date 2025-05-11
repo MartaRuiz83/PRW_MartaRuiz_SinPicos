@@ -353,9 +353,9 @@ return [
         ],
         [
             'text'   => 'Home',
-            'route'  => 'admin.home',        
+            'route'  => 'home',        
             'icon'   => 'fas fa-fw fa-home',
-            'active' => ['admin/home*'],    
+            'active' => ['home*'],    
         ],
         
        
