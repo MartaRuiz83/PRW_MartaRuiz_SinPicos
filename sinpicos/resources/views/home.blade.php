@@ -9,7 +9,7 @@
       <div class="card h-100">
         <div class="card-body text-center">
           <h5 class="card-title">Carbohidratos</h5>
-          <h2 class="fw-bold">145 g</h2>
+          <h2 class="fw-bold">{{$carbohydrates}} g</h2>
           <p class="text-muted mb-0">de 180 g objetivo</p>
         </div>
       </div>
@@ -18,7 +18,7 @@
       <div class="card h-100">
         <div class="card-body text-center">
           <h5 class="card-title">Proteínas</h5>
-          <h2 class="fw-bold">65 g</h2>
+          <h2 class="fw-bold">{{$proteins}} g</h2>
           <p class="text-muted mb-0">de 90 g objetivo</p>
         </div>
       </div>
@@ -27,7 +27,7 @@
       <div class="card h-100">
         <div class="card-body text-center">
           <h5 class="card-title">Grasas</h5>
-          <h2 class="fw-bold">48 g</h2>
+          <h2 class="fw-bold">{{$fats}} g</h2>
           <p class="text-muted mb-0">de 60 g objetivo</p>
         </div>
       </div>
@@ -115,9 +115,9 @@
       radius:['40%','70%'],
       label:{ formatter:'{b}: {c} g' },
       data:[
-        { value:145, name:'Carbohidratos' },
-        { value:65,  name:'Proteínas' },
-        { value:48,  name:'Grasas' }
+        { value:{{$carbohydrates}}, name:'Carbohidratos' },
+        { value:{{$proteins}},  name:'Proteínas' },
+        { value:{{$fats}},  name:'Grasas' }
       ]
     }]
   });

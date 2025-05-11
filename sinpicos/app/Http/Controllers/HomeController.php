@@ -14,7 +14,11 @@ class HomeController extends Controller
                  ->orderByDesc('time')
                  ->get();
 
-    return view('home', compact('meals'));
+    $carbohydrates = 50;
+    $proteins = 30;
+    $fats = 20;             
+
+    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats'));
 }
 
 }

@@ -94,7 +94,7 @@
         </div>
 
         <div class="d-flex justify-content-end">
-          <a href="{{ route('admin.home') }}" class="btn btn-secondary me-2">Cancelar</a>
+          <a href="{{ route('home') }}" class="btn btn-secondary me-2">Cancelar</a>
           <button type="submit" class="btn btn-primary">Actualizar</button>
         </div>
       </form>
