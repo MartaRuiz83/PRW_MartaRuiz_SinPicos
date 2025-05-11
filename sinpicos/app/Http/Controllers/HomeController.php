@@ -13,10 +13,18 @@ class HomeController extends Controller
                  ->orderByDesc('date')
                  ->orderByDesc('time')
                  ->get();
-
-    $carbohydrates = 50;
-    $proteins = 30;
-    $fats = 20;             
+   
+    $carbohydrates = 0;
+    $proteins = 0;
+    $fats = 0;   
+    
+    foreach ($meals as $meal) {
+        foreach ($meal->ingredients as $ingredient) {
+            $carbohydrates += $ingredient->carbohydrates * $ingredient->pivot->quantity/100;
+            $proteins += $ingredient->proteins * $ingredient->pivot->quantity/100;
+            $fats += $ingredient->fats * $ingredient->pivot->quantity/100;
+    }
+}
 
     return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats'));
 }
