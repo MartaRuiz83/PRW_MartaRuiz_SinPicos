@@ -9,10 +9,13 @@ class HomeController extends Controller
 {
     public function index()
 {
-    $meals = Meal::with('ingredients') 
-                 ->orderByDesc('date')
-                 ->orderByDesc('time')
-                 ->get();
+
+   $meals = Meal::with('ingredients')
+    ->where('user_id', auth()->id())       // filtra directamente por la FK
+    ->orderByDesc('date')
+    ->orderByDesc('time')
+    ->get();
+
    
     $carbohydrates = 0;
     $proteins = 0;

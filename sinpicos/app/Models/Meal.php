@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Meal extends Model
 {
-    protected $fillable = ['date','time','meal_type','description'];
+    protected $fillable = ['date','time','meal_type','description','user_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function ingredients()
     {

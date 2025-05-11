@@ -51,6 +51,7 @@ class MealController extends Controller
             'time'        => $data['time'],
             'meal_type'   => $data['meal_type'],
             'description' => $data['description'],
+            'user_id'     => auth()->id(), // id del usuario logueado
         ]);
 
         $pivot = [];
