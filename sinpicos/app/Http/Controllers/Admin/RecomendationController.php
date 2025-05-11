@@ -13,9 +13,6 @@ class RecomendationController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Listado de recomendaciones del usuario.
-     */
     public function index()
     {
         $recs = auth()->user()
@@ -26,17 +23,11 @@ class RecomendationController extends Controller
         return view('admin.recomendations.index', compact('recs'));
     }
 
-    /**
-     * Formulario de creación.
-     */
     public function create()
     {
         return view('admin.recomendations.create');
     }
 
-    /**
-     * Guarda nueva recomendación.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -54,38 +45,32 @@ class RecomendationController extends Controller
     }
 
     /**
-     * Detalle de una recomendación.
+     * Muestra el detalle de una recomendación.
      */
     public function show(Recomendation $recomendation)
     {
-        // Control manual de permisos: sólo el dueño o admin
-        if (auth()->id() !== $recomendation->user_id && ! auth()->user()->is_admin) {
+        // Sólo el dueño puede verla
+        if (auth()->id() !== $recomendation->user_id) {
             abort(403, 'No tienes permiso para ver esta recomendación.');
         }
 
         return view('admin.recomendations.show', compact('recomendation'));
     }
 
-    /**
-     * Formulario de edición.
-     */
     public function edit(Recomendation $recomendation)
     {
-        // Mismo control manual
-        if (auth()->id() !== $recomendation->user_id && ! auth()->user()->is_admin) {
+        // Sólo el dueño puede editarla
+        if (auth()->id() !== $recomendation->user_id) {
             abort(403, 'No tienes permiso para editar esta recomendación.');
         }
 
         return view('admin.recomendations.edit', compact('recomendation'));
     }
 
-    /**
-     * Actualiza la recomendación.
-     */
     public function update(Request $request, Recomendation $recomendation)
     {
-        // Control manual
-        if (auth()->id() !== $recomendation->user_id && ! auth()->user()->is_admin) {
+        // Sólo el dueño puede actualizarla
+        if (auth()->id() !== $recomendation->user_id) {
             abort(403, 'No tienes permiso para actualizar esta recomendación.');
         }
 
@@ -101,13 +86,10 @@ class RecomendationController extends Controller
             ->with('success', 'Recomendación actualizada correctamente.');
     }
 
-    /**
-     * Elimina la recomendación.
-     */
     public function destroy(Recomendation $recomendation)
     {
-        // Control manual
-        if (auth()->id() !== $recomendation->user_id && ! auth()->user()->is_admin) {
+        // Sólo el dueño puede borrarla
+        if (auth()->id() !== $recomendation->user_id) {
             abort(403, 'No tienes permiso para eliminar esta recomendación.');
         }
 

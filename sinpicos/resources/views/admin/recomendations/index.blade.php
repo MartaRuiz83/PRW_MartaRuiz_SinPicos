@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
     <h1 class="h3">Recomendaciones</h1>
-    <a href="{{ route('admin.recomendations.create') }}" class="btn btn-primary">
+    <a href="{{ route('admin.recomendations.create') }}" class="btn btn-success">
         <i class="fas fa-plus"></i> Crear nueva
     </a>
 </div>
