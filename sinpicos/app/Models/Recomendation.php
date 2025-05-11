@@ -8,7 +8,6 @@ class Recomendation extends Model
 {
     // Laravel infiere la tabla 'recomendations'
     protected $fillable = [
-        'user_id',
         'titulo',
         'descripcion',
     ];

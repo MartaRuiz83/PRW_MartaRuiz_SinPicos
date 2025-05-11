@@ -44,8 +44,28 @@
   </div>
 </div>
 
+<h2 class="h5 mb-3">Consejos del día</h2>
+@foreach($tips as $tip)
+<div class="container py-4"></div>
+  <div class="card shadow-sm rounded-lg border-0">
+    <div class="card-body">
+      <p class="mb-0">{{ $tip->recomendation->titulo}}</p>
+      <p class="mb-0 text-muted">{{ $tip->recomendation->descripcion}}</p>
+     
+      <form action="{{ route('admin.tips.showed', $tip) }}"
+            method="POST">
+            @csrf
+        <button type="submit"
+                class="btn btn-link text-danger p-0"
+                title="Eliminar">
+          <i class="ri-delete-bin-2-line fs-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+@endforeach
 
-  
+
 
 
   {{-- Resumen del Día --}}

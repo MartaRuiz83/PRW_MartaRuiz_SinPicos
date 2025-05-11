@@ -13,9 +13,6 @@ class CreateRecomendationsTable extends Migration
     {
         Schema::create('recomendations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                  ->constrained()
-                  ->onDelete('cascade');
             $table->string('titulo');
             $table->text('descripcion');
             $table->timestamps();

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tip;
 use App\Models\Meal;
-use Illuminate\Http\Request;
 use DateTimeImmutable;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -44,7 +45,12 @@ class HomeController extends Controller
         'tomorrow' =>($date < $now)? $date->modify("+1 day"):null,
     ];
 
-    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats','dates'));
+    $tips = Tip::where('showed', false)
+    ->where('user_id', auth()->id()) 
+    ->get();
+
+    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats','dates','tips'));
+    
 }
 
 }

@@ -1,11 +1,12 @@
 <?php
 
+use App\Models\Tip;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MealController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\RecomendationController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MealController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,4 +66,13 @@ Route::middleware(['auth', 'verified'])
     Route::resource('meals', MealController::class)
          ->except(['create', 'store']);
 
-});
+     // Rutas Tip Showed
+    Route::post('/tips/showed/{tip}', function (Tip $tip) {
+        $tip->showed = true;
+        $tip->save();
+        return redirect()->route('home');
+
+     })->name('tips.showed');
+
+ });  
+
