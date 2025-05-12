@@ -77,17 +77,33 @@
   </div>
 </div>
 
+@php
+    $ranges = [
+        'carbohydrates' => ['min' => 130, 'max' => 180],
+        'proteins'      => ['min' => 75,  'max' => 100],
+        'fats'          => ['min' => 50,  'max' => 70],
+        'calories'      => ['min' => 1500, 'max' => 2000],
+    ];
+
+    function getColorClass($value, $min, $max) {
+        if ($value < $min) return 'text-success';      // Verde
+        if ($value >= $min && $value < $max) return 'text-warning'; // Naranja
+        return 'text-danger';                          // Rojo
+    }
+@endphp
+
+
  {{-- Resumen del Día --}}
 <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
-
+  
   <div class="col">
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Carbohidratos</h5>
-        <h2 class="fw-bold {{ $carbohydrates > 180 ? 'text-danger' : '' }}">
+        <h2 class="fw-bold {{ getColorClass($carbohydrates, $ranges['carbohydrates']['min'], $ranges['carbohydrates']['max']) }}">
           {{ $carbohydrates }} g
         </h2>
-        <p class="text-muted mb-0">de 180 g objetivo</p>
+        <p class="text-muted mb-0">de 130 - 180 g</p>
       </div>
     </div>
   </div>
@@ -96,10 +112,10 @@
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Proteínas</h5>
-        <h2 class="fw-bold {{ $proteins > 100 ? 'text-danger' : '' }}">
+        <h2 class="fw-bold {{ getColorClass($proteins, $ranges['proteins']['min'], $ranges['proteins']['max']) }}">
           {{ $proteins }} g
         </h2>
-        <p class="text-muted mb-0">de 100 g objetivo</p>
+        <p class="text-muted mb-0">de 75 - 100 g</p>
       </div>
     </div>
   </div>
@@ -108,10 +124,10 @@
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Grasas</h5>
-        <h2 class="fw-bold {{ $fats > 70 ? 'text-danger' : '' }}">
+        <h2 class="fw-bold {{ getColorClass($fats, $ranges['fats']['min'], $ranges['fats']['max']) }}">
           {{ $fats }} g
         </h2>
-        <p class="text-muted mb-0">de 70 g objetivo</p>
+        <p class="text-muted mb-0">de 50 - 70 g</p>
       </div>
     </div>
   </div>
@@ -120,15 +136,16 @@
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Calorías</h5>
-        <h2 class="fw-bold {{ $calories > 2000 ? 'text-danger' : '' }}">
+        <h2 class="fw-bold {{ getColorClass($calories, $ranges['calories']['min'], $ranges['calories']['max']) }}">
           {{ round($calories, 1) }} kcal
         </h2>
-        <p class="text-muted mb-0">de 2000 kcal objetivo</p>
+        <p class="text-muted mb-0">de 21500 - 2000 kcal</p>
       </div>
     </div>
   </div>
 
 </div>
+
 
 
   {{-- Gráfico de macronutrientes --}}
