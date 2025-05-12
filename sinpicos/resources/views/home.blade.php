@@ -174,10 +174,16 @@
             @endforeach
           </strong></p>
           <p class="mb-1 text-muted">
-            {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }}
-            —
-            {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
-          </p>
+    {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }} — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
+</p>
+
+  {{-- Descripción de la comida --}}
+  @if(!empty($meal->description))
+    <p class="mb-1">
+        <strong>Descripción:</strong> {{ $meal->description }}
+    </p>
+  @endif
+
           @php
             $c = $p = $f = 0;
             foreach($meal->ingredients as $ing) {
