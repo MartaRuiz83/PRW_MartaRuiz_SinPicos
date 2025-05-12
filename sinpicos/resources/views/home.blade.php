@@ -145,12 +145,14 @@
               $c += ($ing->carbohydrates ?? 0) * $q / 100;
               $p += ($ing->proteins      ?? 0) * $q / 100;
               $f += ($ing->fats          ?? 0) * $q / 100;
+              $meal->calories += ($ing->calories ?? 0) * $q / 100; 
             }
           @endphp
           <p class="mb-0 text-muted">
-            Carbos: {{ round($c,1) }} g |
-            Prot:   {{ round($p,1) }} g |
-            Grasas: {{ round($f,1) }} g
+            Carbohidratos: {{ round($c,1) }} g |
+            Proteinas:   {{ round($p,1) }} g |
+            Grasas: {{ round($f,1) }} g |
+            Calorías: {{ round($meal->calories,1) }} kcal
           </p>
         </div>
         <div class="d-flex align-items-center">
