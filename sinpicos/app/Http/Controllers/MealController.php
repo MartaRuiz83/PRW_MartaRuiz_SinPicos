@@ -12,15 +12,42 @@ class MealController extends Controller
      * 1) Mostrar listado de comidas (público /home).
      */
     public function index()
-    {
-        // cargamos los ingredientes para calcular macros si quieres
-        $meals = Meal::with('ingredients')
-                     ->orderByDesc('date')
-                     ->orderByDesc('time')
-                     ->get();
+{
+    $meals = Meal::with('ingredients')
+                 ->where('user_id', auth()->id())
+                 ->orderByDesc('date')
+                 ->orderByDesc('time')
+                 ->get();
 
-        return view('home', compact('meals'));
+    $carbohydrates = 0;
+    $proteins = 0;
+    $fats = 0;
+    $calories = 0;
+
+    foreach ($meals as $meal) {
+        foreach ($meal->ingredients as $ingredient) {
+            $quantity = $ingredient->pivot->quantity;
+
+            $carbohydrates += ($ingredient->carbohydrates ?? 0) * $quantity / 100;
+            $proteins      += ($ingredient->proteins ?? 0) * $quantity / 100;
+            $fats          += ($ingredient->fats ?? 0) * $quantity / 100;
+            $calories      += ($ingredient->calories ?? 0) * $quantity / 100;
+        }
     }
+
+    // Definimos las fechas aunque no sean claves aquí, para evitar errores en la vista
+    $now = new \DateTimeImmutable('today');
+    $dates = [
+        'today'     => $now,
+        'yesterday' => $now->modify('-1 day'),
+        'tomorrow'  => null, // En este contexto no aplicaría, pero se define para evitar errores
+    ];
+
+    // Si necesitas los tips, también pásalos. Si no, puedes eliminar esta línea.
+    $tips = []; // O Tip::where(...)->get();
+
+    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats', 'calories', 'dates', 'tips'));
+}
 
     /**
      * 2) Muestra el formulario de creación de comida.
