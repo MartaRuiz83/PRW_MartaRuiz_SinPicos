@@ -79,12 +79,14 @@
 
  {{-- Resumen del Día --}}
 <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
-  
+
   <div class="col">
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Carbohidratos</h5>
-        <h2 class="fw-bold">{{$carbohydrates}} g</h2>
+        <h2 class="fw-bold {{ $carbohydrates > 180 ? 'text-danger' : '' }}">
+          {{ $carbohydrates }} g
+        </h2>
         <p class="text-muted mb-0">de 180 g objetivo</p>
       </div>
     </div>
@@ -94,8 +96,10 @@
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Proteínas</h5>
-        <h2 class="fw-bold">{{$proteins}} g</h2>
-        <p class="text-muted mb-0">de 90 g objetivo</p>
+        <h2 class="fw-bold {{ $proteins > 100 ? 'text-danger' : '' }}">
+          {{ $proteins }} g
+        </h2>
+        <p class="text-muted mb-0">de 100 g objetivo</p>
       </div>
     </div>
   </div>
@@ -104,8 +108,10 @@
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Grasas</h5>
-        <h2 class="fw-bold">{{$fats}} g</h2>
-        <p class="text-muted mb-0">de 60 g objetivo</p>
+        <h2 class="fw-bold {{ $fats > 70 ? 'text-danger' : '' }}">
+          {{ $fats }} g
+        </h2>
+        <p class="text-muted mb-0">de 70 g objetivo</p>
       </div>
     </div>
   </div>
@@ -114,13 +120,16 @@
     <div class="card h-100">
       <div class="card-body text-center">
         <h5 class="card-title">Calorías</h5>
-        <h2 class="fw-bold">{{ round($calories, 1) }} kcal</h2>
+        <h2 class="fw-bold {{ $calories > 2000 ? 'text-danger' : '' }}">
+          {{ round($calories, 1) }} kcal
+        </h2>
         <p class="text-muted mb-0">de 2000 kcal objetivo</p>
       </div>
     </div>
   </div>
 
 </div>
+
 
   {{-- Gráfico de macronutrientes --}}
   <div class="card mb-4">
