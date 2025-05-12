@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meal;
 use App\Models\Ingredient;
+use App\Models\Tip;
 use Illuminate\Http\Request;
 
 class MealController extends Controller
@@ -12,42 +13,42 @@ class MealController extends Controller
      * 1) Mostrar listado de comidas (público /home).
      */
     public function index()
-{
-    $meals = Meal::with('ingredients')
-                 ->where('user_id', auth()->id())
-                 ->orderByDesc('date')
-                 ->orderByDesc('time')
-                 ->get();
+    {
+        $meals = Meal::with('ingredients')
+                     ->where('user_id', auth()->id())
+                     ->orderByDesc('date')
+                     ->orderByDesc('time')
+                     ->get();
 
-    $carbohydrates = 0;
-    $proteins = 0;
-    $fats = 0;
-    $calories = 0;
+        $carbohydrates = 0;
+        $proteins = 0;
+        $fats = 0;
+        $calories = 0;
 
-    foreach ($meals as $meal) {
-        foreach ($meal->ingredients as $ingredient) {
-            $quantity = $ingredient->pivot->quantity;
+        foreach ($meals as $meal) {
+            foreach ($meal->ingredients as $ingredient) {
+                $quantity = $ingredient->pivot->quantity;
 
-            $carbohydrates += ($ingredient->carbohydrates ?? 0) * $quantity / 100;
-            $proteins      += ($ingredient->proteins ?? 0) * $quantity / 100;
-            $fats          += ($ingredient->fats ?? 0) * $quantity / 100;
-            $calories      += ($ingredient->calories ?? 0) * $quantity / 100;
+                $carbohydrates += ($ingredient->carbohydrates ?? 0) * $quantity / 100;
+                $proteins      += ($ingredient->proteins ?? 0) * $quantity / 100;
+                $fats          += ($ingredient->fats ?? 0) * $quantity / 100;
+                $calories      += ($ingredient->calories ?? 0) * $quantity / 100;
+            }
         }
+
+        $now = new \DateTimeImmutable('today');
+        $dates = [
+            'today'     => $now,
+            'yesterday' => $now->modify('-1 day'),
+            'tomorrow'  => null,
+        ];
+
+        $tips = Tip::where('showed', false)
+                    ->where('user_id', auth()->id())
+                    ->get();
+
+        return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats', 'calories', 'dates', 'tips'));
     }
-
-    // Definimos las fechas aunque no sean claves aquí, para evitar errores en la vista
-    $now = new \DateTimeImmutable('today');
-    $dates = [
-        'today'     => $now,
-        'yesterday' => $now->modify('-1 day'),
-        'tomorrow'  => null, // En este contexto no aplicaría, pero se define para evitar errores
-    ];
-
-    // Si necesitas los tips, también pásalos. Si no, puedes eliminar esta línea.
-    $tips = []; // O Tip::where(...)->get();
-
-    return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats', 'calories', 'dates', 'tips'));
-}
 
     /**
      * 2) Muestra el formulario de creación de comida.
@@ -78,7 +79,7 @@ class MealController extends Controller
             'time'        => $data['time'],
             'meal_type'   => $data['meal_type'],
             'description' => $data['description'],
-            'user_id'     => auth()->id(), // id del usuario logueado
+            'user_id'     => auth()->id(),
         ]);
 
         $pivot = [];
@@ -96,7 +97,6 @@ class MealController extends Controller
      */
     public function show(Meal $meal)
     {
-        // cargamos ingredientes y cantidades
         $meal->load('ingredients');
         return view('admin.meals.show', compact('meal'));
     }
@@ -106,7 +106,7 @@ class MealController extends Controller
      */
     public function edit(Meal $meal)
     {
-        $ingredients     = Ingredient::orderBy('name')->get();
+        $ingredients = Ingredient::orderBy('name')->get();
         $meal->load('ingredients');
         return view('admin.meals.edit', compact('meal', 'ingredients'));
     }
