@@ -113,8 +113,8 @@ return [
             'path' => 'images/Logo.png',
             'alt' => 'SinPicos',
             'effect' => 'animation__shake slowest',
-            'width' => '140px',
-            'height' => '140px',
+            'width' => '110px',
+            'height' => '110px',
         ],
     ],
 
