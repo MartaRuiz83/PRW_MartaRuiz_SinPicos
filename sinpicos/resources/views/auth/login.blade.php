@@ -71,7 +71,7 @@
 
                 <x-button
                     class="w-full mt-2 text-white font-medium rounded flex items-center justify-center py-2"
-                    style="background-color: #4357e4;"
+                    style="background-color: #7e43ee;"
                 >
                     {{ __('Iniciar sesión') }}
                 </x-button>
