@@ -146,12 +146,25 @@ class MealController extends Controller
     /**
      * 7) Elimina la comida (admin.meals.destroy).
      */
-    public function destroy(Meal $meal)
-    {
-        $meal->ingredients()->detach();
-        $meal->delete();
+   // app/Http/Controllers/MealController.php
 
-        return redirect()->route('admin.meals.index')
-                         ->with('success', 'Comida eliminada correctamente');
+public function destroy(Request $request, Meal $meal)
+{
+    // Desvincula ingredientes y borra
+    $meal->ingredients()->detach();
+    $meal->delete();
+
+    // Si venimos de la vista /home, recibiremos un hidden 'date'
+    if ($request->filled('date')) {
+        return redirect()
+            ->route('home', ['date' => $request->input('date')])
+            ->with('success', 'Comida eliminada correctamente.');
     }
+
+    // Si no, redirige al listado de admin
+    return redirect()
+        ->route('admin.meals.index')
+        ->with('success', 'Comida eliminada correctamente.');
+}
+
 }

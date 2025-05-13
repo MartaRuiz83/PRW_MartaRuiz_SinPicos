@@ -75,18 +75,35 @@
     <div class="col">
       <div class="card h-100">
         <div class="card-body text-center">
-          <h5 class="card-title">{{ ucfirst($label) }}</h5>
+          {{-- Títulos en español --}}
+          @switch($label)
+            @case('carbohydrates')
+              <h5 class="card-title">Carbohidratos</h5>
+              @break
+            @case('proteins')
+              <h5 class="card-title">Proteínas</h5>
+              @break
+            @case('fats')
+              <h5 class="card-title">Grasas</h5>
+              @break
+            @case('calories')
+              <h5 class="card-title">Calorías</h5>
+              @break
+          @endswitch
+
           <h2 class="fw-bold {{ getColorClass($$label, $r['min'], $r['max']) }}">
             {{ $label==='calories' ? round($$label,1).' kcal' : $$label.' g' }}
           </h2>
           <p class="text-muted mb-0">
-            de {{ $r['min'] }} - {{ $r['max'] }} {{ $label==='calories' ? 'kcal' : 'g' }}
+            de {{ $r['min'] }} - {{ $r['max'] }}
+            {{ $label==='calories' ? 'kcal' : 'g' }}
           </p>
         </div>
       </div>
     </div>
   @endforeach
 </div>
+
 
 {{-- Gráfico de macronutrientes --}}
 <div class="card mb-4">
@@ -120,8 +137,8 @@
           @php
             $icon = match($type) {
               'Desayuno' => 'ri-sun-line text-warning',
-              'Almuerzo' => 'ri-restaurant-line text-primary',
-              'Snack'    => 'ri-coffee-line text-info',
+              'Almuerzo' => 'ri-restaurant-line text-info',
+              'Snack'    => 'ri-apple-line text-success', 
               'Cena'     => 'ri-moon-line text-secondary',
               default    => 'ri-clipboard-line text-muted',
             };
