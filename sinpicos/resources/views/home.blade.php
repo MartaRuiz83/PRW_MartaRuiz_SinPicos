@@ -1,10 +1,6 @@
-{{-- resources/views/home.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
-
-
-
 
 <div class="container py-4">
   <div class="card shadow-sm rounded-lg border-0">
@@ -139,7 +135,7 @@
         <h2 class="fw-bold {{ getColorClass($calories, $ranges['calories']['min'], $ranges['calories']['max']) }}">
           {{ round($calories, 1) }} kcal
         </h2>
-        <p class="text-muted mb-0">de 21500 - 2000 kcal</p>
+        <p class="text-muted mb-0">de 1500 - 2000 kcal</p>
       </div>
     </div>
   </div>
@@ -168,37 +164,18 @@
     <div class="card mb-3">
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
+          {{-- Mostrar descripción como título si existe --}}
+          @if(!empty($meal->description))
+            <h5 class="mb-2">{{ $meal->description }}</h5>
+          @endif
+
           <p class="mb-1"><strong>
             @foreach($meal->ingredients as $ing)
               {{ $ing->name }} ({{ $ing->pivot->quantity }} g)@if(!$loop->last), @endif
             @endforeach
           </strong></p>
           <p class="mb-1 text-muted">
-    {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }} — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
-</p>
-
-  {{-- Descripción de la comida --}}
-  @if(!empty($meal->description))
-    <p class="mb-1">
-        <strong>Descripción:</strong> {{ $meal->description }}
-    </p>
-  @endif
-
-          @php
-            $c = $p = $f = 0;
-            foreach($meal->ingredients as $ing) {
-              $q = $ing->pivot->quantity;
-              $c += ($ing->carbohydrates ?? 0) * $q / 100;
-              $p += ($ing->proteins      ?? 0) * $q / 100;
-              $f += ($ing->fats          ?? 0) * $q / 100;
-              $meal->calories += ($ing->calories ?? 0) * $q / 100; 
-            }
-          @endphp
-          <p class="mb-0 text-muted">
-            Carbohidratos: {{ round($c,1) }} g |
-            Proteinas:   {{ round($p,1) }} g |
-            Grasas: {{ round($f,1) }} g |
-            Calorías: {{ round($meal->calories,1) }} kcal
+            {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }} — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
           </p>
         </div>
         <div class="d-flex align-items-center">
