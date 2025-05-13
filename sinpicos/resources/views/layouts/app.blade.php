@@ -105,7 +105,7 @@
       <div class="menu d-flex align-items-center">
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
         <a href="{{ route('meals.create') }}">Registro de Comidas</a>
-        <a href="#">Estadísticas</a>
+        <a href="{{ route('statistics') }}">Estadísticas</a>
         <a href="#">Sugerencias</a>
       </div>
 

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MealController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\Admin\IngredientController;
 use App\Http\Controllers\Admin\RecomendationController;
 
@@ -75,4 +76,8 @@ Route::middleware(['auth', 'verified'])
      })->name('tips.showed');
 
  });  
+
+ // Rutas para estadísticas
+     Route::get('/statistics', [StatisticsController::class, 'index'])
+     ->name('statistics');
 
