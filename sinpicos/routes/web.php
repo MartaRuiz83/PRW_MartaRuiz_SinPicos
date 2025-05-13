@@ -18,66 +18,64 @@ use App\Http\Controllers\Admin\RecomendationController;
 |
 */
 
-// ——————————————————————————————————————————————————————————
-// 0) Alias “dashboard” para no romper enlaces hard-codeados
-// ——————————————————————————————————————————————————————————
+// 1) Landing pública antes de login
+Route::view('/', 'welcome')
+     ->name('welcome');
+
+// 2) Fortify/Jetstream login, registro, etc (ya incluidas en service provider)
+//    Alias “dashboard” para no romper enlaces hard-codeados
 Route::middleware(['auth','verified'])
      ->get('/dashboard', fn() => redirect()->route('admin.dashboard'))
      ->name('dashboard');
 
-// 1) Al entrar en “/” te lleva al login (Fortify/Jetstream lo maneja).
-Route::get('/', fn() => redirect()->route('login'));
-
-// 2) RUTAS DEL FRONTEND (sólo para usuarios logueados)
-//    - /home         → listado público de comidas
-//    - /meals/create → formulario para crear comida
-//    - POST /meals   → guardar en BD
+// 3) RUTAS DEL FRONTEND (sólo para usuarios logueados)
+//    - /home/{date?}   → listado público de comidas filtrado por fecha
+//    - /meals/create   → formulario para crear comida
+//    - POST /meals     → guardar en BD
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/home/{date?}',           [HomeController::class, 'index'])
+    Route::get('/home/{date?}', [HomeController::class, 'index'])
          ->name('home');
 
-    Route::get('/meals/create',   [MealController::class, 'create'])
+    Route::get('/meals/create', [MealController::class, 'create'])
          ->name('meals.create');
 
-    Route::post('/meals',         [MealController::class, 'store'])
+    Route::post('/meals', [MealController::class, 'store'])
          ->name('meals.store');
+
+    // Estadísticas para usuarios logueados
+    Route::get('/statistics', [StatisticsController::class, 'index'])
+         ->name('statistics');
 });
 
-// 3) RUTAS DEL PANEL DE ADMIN (AdminLTE)
+// 4) RUTAS DEL PANEL DE ADMIN (AdminLTE)
 //    Todas estas usan prefijo /admin y nombre admin.*
 Route::middleware(['auth', 'verified'])
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {
 
-
-
-    // 3.5) CRUD Recomendaciones
-    Route::resource('recomendations', RecomendationController::class);
-
-    // 3.1) Dashboard principal de AdminLTE
+    // 4.1) Dashboard principal de AdminLTE
     Route::get('/dashboard', fn() => view('admin.dashboard'))
          ->name('dashboard');
 
-    // 3.3) CRUD de Usuarios
+    // 4.2) CRUD Recomendaciones
+    Route::resource('recomendations', RecomendationController::class);
+
+    // 4.3) CRUD Usuarios
     Route::resource('users', UserController::class);
 
-    // 3.4) CRUD de Ingredientes
+    // 4.4) CRUD Ingredientes
     Route::resource('ingredients', IngredientController::class);
+
+    // 4.5) CRUD Comidas en admin (sin create/store, que están en frontend)
     Route::resource('meals', MealController::class)
          ->except(['create', 'store']);
 
-     // Rutas Tip Showed
+    // 4.6) Marcar tips como vistos
     Route::post('/tips/showed/{tip}', function (Tip $tip) {
         $tip->showed = true;
         $tip->save();
-        return redirect()->route('home');
+        return redirect()->route('home', ['date' => now()->format('Y-m-d')]);
+    })->name('tips.showed');
 
-     })->name('tips.showed');
-
- });  
-
- // Rutas para estadísticas
-     Route::get('/statistics', [StatisticsController::class, 'index'])
-     ->name('statistics');
-
+});
