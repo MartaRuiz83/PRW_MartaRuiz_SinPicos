@@ -42,9 +42,8 @@
 
 <div class="container py-4">
   <h2 class="h5 mb-4" style="color: #7d3ced;">
-  Consejos del día
-</h2>
-
+    Consejos del día
+  </h2>
 
   <div class="row g-3">
     @foreach($tips as $tip)
@@ -88,8 +87,7 @@
     }
 @endphp
 
-
- {{-- Resumen del Día --}}
+{{-- Resumen del Día --}}
 <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
   
   <div class="col">
@@ -142,67 +140,87 @@
 
 </div>
 
-
-
-  {{-- Gráfico de macronutrientes --}}
-  <div class="card mb-4">
-    <div class="card-body" style="height:300px;">
-      <div id="macronutrientesChart" class="w-100 h-100"></div>
-    </div>
+{{-- Gráfico de macronutrientes --}}
+<div class="card mb-4">
+  <div class="card-body" style="height:300px;">
+    <div id="macronutrientesChart" class="w-100 h-100"></div>
   </div>
+</div>
 
-  {{-- Registro de Comidas --}}
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h5 mb-0">Registro de Comidas</h2>
-    <a href="{{ route('meals.create') }}" class="btn btn-primary">
-      <i class="ri-add-line"></i> Añadir Comida
-    </a>
-  </div>
+{{-- Registro de Comidas --}}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h5 mb-0">Registro de Comidas</h2>
+  <a href="{{ route('meals.create') }}" class="btn btn-primary">
+    <i class="ri-add-line"></i> Añadir Comida
+  </a>
+</div>
 
-  {{-- Listado de comidas --}}
-  @forelse($meals as $meal)
-    <div class="card mb-3">
-      <div class="card-body d-flex justify-content-between align-items-center">
-        <div>
-          {{-- Mostrar descripción como título si existe --}}
-          @if(!empty($meal->description))
-           <h5 class="mb-2" style="color: #7d3ced;">{{ $meal->description }}</h5>
-          @endif
+{{-- Listado de comidas --}}
+@forelse($meals as $meal)
+  <div class="card mb-3">
+    <div class="card-body d-flex justify-content-between align-items-center">
+      <div>
+        {{-- Badge que muestra el tipo de comida con colores distintos --}}
+        @php
+          $badgeClass = match($meal->meal_type) {
+            'Desayuno' => 'bg-success text-white',
+            'Almuerzo'  => 'bg-warning text-white',
+            'Snack'     => 'bg-info text-white',
+            'Cena'      => 'bg-danger text-white',
+            default     => 'bg-light text-dark',
+          };
+        @endphp
+        <p class="mb-1">
+          <span class="badge {{ $badgeClass }} text-uppercase">
+            {{ $meal->meal_type }}
+          </span>
+        </p>
 
-          <p class="mb-1"><strong>
-            @foreach($meal->ingredients as $ing)
-              {{ $ing->name }} ({{ $ing->pivot->quantity }} g)@if(!$loop->last), @endif
-            @endforeach
-          </strong></p>
-          <p class="mb-1 text-muted">
-            {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }} — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
-          </p>
-        </div>
-        <div class="d-flex align-items-center">
-          {{-- Editar (solo icono naranja) --}}
-          <a href="{{ route('admin.meals.edit', $meal) }}"
-             class="btn btn-link text-warning p-0 me-3"
-             title="Editar">
-            <i class="ri-pencil-line fs-4"></i>
-          </a>
-          {{-- Eliminar (solo icono rojo) --}}
-          <form action="{{ route('admin.meals.destroy', $meal) }}"
-                method="POST"
-                onsubmit="return confirm('¿Eliminar esta comida?');">
-            @csrf @method('DELETE')
-            <button type="submit"
-                    class="btn btn-link text-danger p-0"
-                    title="Eliminar">
-              <i class="ri-delete-bin-2-line fs-4"></i>
-            </button>
-          </form>
-        </div>
+        {{-- Mostrar descripción como título si existe --}}
+        @if(!empty($meal->description))
+          <h5 class="mb-2" style="color: #000000;">
+            {{ $meal->description }}
+          </h5>
+        @endif
+
+        {{-- Ingredientes --}}
+        <p class="mb-1"><strong>
+          @foreach($meal->ingredients as $ing)
+            {{ $ing->name }} ({{ $ing->pivot->quantity }} g)@if(!$loop->last), @endif
+          @endforeach
+        </strong></p>
+
+        {{-- Fecha y hora --}}
+        <p class="mb-1 text-muted">
+          {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }}
+          — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
+        </p>
+      </div>
+      <div class="d-flex align-items-center">
+        {{-- Editar --}}
+        <a href="{{ route('admin.meals.edit', $meal) }}"
+           class="btn btn-link text-warning p-0 me-3"
+           title="Editar">
+          <i class="ri-pencil-line fs-4"></i>
+        </a>
+        {{-- Eliminar --}}
+        <form action="{{ route('admin.meals.destroy', $meal) }}"
+              method="POST"
+              onsubmit="return confirm('¿Eliminar esta comida?');">
+          @csrf @method('DELETE')
+          <button type="submit"
+                  class="btn btn-link text-danger p-0"
+                  title="Eliminar">
+            <i class="ri-delete-bin-2-line fs-4"></i>
+          </button>
+        </form>
       </div>
     </div>
-  @empty
-    <p class="text-muted">No hay comidas registradas.</p>
-  @endforelse
-</div>
+  </div>
+@empty
+  <p class="text-muted">No hay comidas registradas.</p>
+@endforelse
+
 @endsection
 
 @push('scripts')
