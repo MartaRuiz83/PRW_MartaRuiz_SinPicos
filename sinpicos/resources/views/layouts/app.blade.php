@@ -19,7 +19,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
 
   <style>
-    /* Aseguramos que el texto del logo use Pacifico */
+    /* Logo Pacifico */
     .navbar .logo-text {
       font-family: 'Pacifico', cursive;
       font-size: 1.5rem;
@@ -83,6 +83,21 @@
     .user-menu-dropdown button:hover {
       background-color: #f8f9fa;
     }
+
+    /* Estilo para el enlace Entrar */
+    .login-link {
+      color: #7c3aed;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+    }
+    .login-link:hover {
+      color: #5e2ec6;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -93,11 +108,9 @@
 
       {{-- Logo --}}
       <a href="{{ route('home') }}" class="d-flex align-items-center text-decoration-none">
-        <img
-          src="{{ asset('images/Logo.png') }}"
-          alt="SinPicos logo"
-          class="logo-img me-2"
-        >
+        <img src="{{ asset('images/Logo.png') }}"
+             alt="SinPicos logo"
+             class="logo-img me-2">
         <h1 class="logo-text mb-0">SinPicos</h1>
       </a>
 
@@ -127,7 +140,10 @@
             </div>
           </div>
         @else
-          <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:underline">Entrar</a>
+          {{-- Enlace "Entrar" con icono de usuario --}}
+          <a href="{{ route('login') }}" class="login-link">
+            <i class="ri-user-line fs-5"></i> Entrar
+          </a>
         @endauth
       </div>
 
