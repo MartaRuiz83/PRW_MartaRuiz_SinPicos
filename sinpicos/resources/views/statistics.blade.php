@@ -63,49 +63,64 @@
 
 @push('scripts')
 <script>
-  const labels   = @json($labels);
+  // Datos originales de fechas en formato YYYY-MM-DD
+  const rawLabels = @json($labels);
+  // Reformateo a DD/MM/YYYY para mostrar en eje X
+  const labels = rawLabels.map(dateStr => {
+    const parts = dateStr.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  });
+
   const carbs    = @json($carbs);
   const proteins = @json($proteins);
   const fats     = @json($fats);
   const calories = @json($calories);
 
   // 1) Line chart de macros
-  let chart1 = echarts.init(document.getElementById('lineChart'));
+  const chart1 = echarts.init(document.getElementById('lineChart'));
   chart1.setOption({
-    tooltip: { trigger:'axis' },
-    legend: { data:['Carbohidratos','Proteínas','Grasas'] },
-    xAxis:  { type:'category', data: labels },
-    yAxis:  { type:'value' },
+    tooltip: { trigger: 'axis' },
+    legend:  { data: ['Carbohidratos','Proteínas','Grasas'] },
+    xAxis:   { type: 'category', data: labels },
+    yAxis:   { type: 'value' },
     series: [
-      { name:'Carbohidratos', type:'line', data:carbs },
-      { name:'Proteínas',      type:'line', data:proteins },
-      { name:'Grasas',         type:'line', data:fats }
+      { name:'Carbohidratos', type:'line', data: carbs },
+      { name:'Proteínas',      type:'line', data: proteins },
+      { name:'Grasas',         type:'line', data: fats }
     ]
   });
 
   // 2) Pie chart de porcentaje
-  let chart2 = echarts.init(document.getElementById('pieChart'));
+  const chart2 = echarts.init(document.getElementById('pieChart'));
   chart2.setOption({
-    tooltip: { trigger:'item' },
+    tooltip: { trigger: 'item' },
+    legend:  {
+      orient: 'vertical',
+      left: 'left',
+      data: ['Carbohidratos','Proteínas','Grasas']
+    },
     series: [{
-      type:'pie',
-      radius:'60%',
-      label:{ formatter:'{b}: {d}%' },
-      data:[
-        { value: carbs.reduce((a,b)=>a+b,0),    name:'Carbohidratos' },
-        { value: proteins.reduce((a,b)=>a+b,0), name:'Proteínas' },
-        { value: fats.reduce((a,b)=>a+b,0),     name:'Grasas' }
+      type: 'pie',
+      radius: '60%',
+      label: { formatter: '{b}: {d}%' },
+      data: [
+        { value: carbs.reduce((a,b)=>a+b,0),    name: 'Carbohidratos' },
+        { value: proteins.reduce((a,b)=>a+b,0), name: 'Proteínas' },
+        { value: fats.reduce((a,b)=>a+b,0),     name: 'Grasas' }
       ]
     }]
   });
 
   // 3) Bar chart de calorías
-  let chart3 = echarts.init(document.getElementById('barChart'));
+  const chart3 = echarts.init(document.getElementById('barChart'));
   chart3.setOption({
     tooltip: {},
-    xAxis: { type:'category', data: labels },
-    yAxis: { type:'value' },
-    series: [{ type:'bar', data: calories }]
+    legend:  { data: ['Calorías'] },
+    xAxis:   { type: 'category', data: labels },
+    yAxis:   { type: 'value' },
+    series: [
+      { name: 'Calorías', type: 'bar', data: calories }
+    ]
   });
 </script>
 @endpush
