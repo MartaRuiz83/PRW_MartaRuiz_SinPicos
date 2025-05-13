@@ -13,20 +13,33 @@ class RecomendationController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
-    {
-        // Obtener todas las recomendaciones paginadas
-        $recs = Recomendation::orderBy('id', 'asc')
-                             ->paginate(10);
+    /**
+     * Mostrar listado de recomendaciones, paginadas.
+     */
+   // app/Http/Controllers/Admin/RecomendationController.php
 
-        return view('admin.recomendations.index', compact('recs'));
-    }
+public function index()
+{
+    // Antes: paginate(10)
+    // $recs = Recomendation::orderBy('id', 'asc')->paginate(10);
 
+    // Ahora: traemos TODOS para que DataTables los procese en el cliente
+    $recs = Recomendation::orderBy('id', 'asc')->get();
+
+    return view('admin.recomendations.index', compact('recs'));
+}
+
+    /**
+     * Mostrar formulario de creación.
+     */
     public function create()
     {
         return view('admin.recomendations.create');
     }
 
+    /**
+     * Validar y almacenar nueva recomendación.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -34,7 +47,6 @@ class RecomendationController extends Controller
             'descripcion' => 'required|string',
         ]);
 
-        // Crear nueva recomendación sin asignar user_id
         Recomendation::create($validated);
 
         return redirect()
@@ -42,18 +54,25 @@ class RecomendationController extends Controller
             ->with('success', 'Recomendación creada correctamente.');
     }
 
+    /**
+     * Mostrar detalle de una recomendación.
+     */
     public function show(Recomendation $recomendation)
     {
-        // Mostrar detalle de recomendación
         return view('admin.recomendations.show', compact('recomendation'));
     }
 
+    /**
+     * Mostrar formulario de edición.
+     */
     public function edit(Recomendation $recomendation)
     {
-        // Mostrar formulario de edición
         return view('admin.recomendations.edit', compact('recomendation'));
     }
 
+    /**
+     * Validar y actualizar recomendación existente.
+     */
     public function update(Request $request, Recomendation $recomendation)
     {
         $validated = $request->validate([
@@ -68,6 +87,9 @@ class RecomendationController extends Controller
             ->with('success', 'Recomendación actualizada correctamente.');
     }
 
+    /**
+     * Eliminar una recomendación.
+     */
     public function destroy(Recomendation $recomendation)
     {
         $recomendation->delete();

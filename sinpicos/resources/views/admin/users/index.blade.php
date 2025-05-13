@@ -3,6 +3,14 @@
 
 @section('title', 'Usuarios')
 
+{{-- DataTables CSS --}}
+@section('css')
+  <link 
+    rel="stylesheet" 
+    href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+  >
+@stop
+
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="text-dark font-weight-bold">Usuarios</h1>
@@ -19,67 +27,80 @@
 @stop
 
 @section('content')
-@if(session('success'))
-    <x-adminlte-alert theme="success" title="¡Éxito!">
-        {{ session('success') }}
-    </x-adminlte-alert>
-@endif
+    @if(session('success'))
+        <x-adminlte-alert theme="success" title="¡Éxito!">
+            {{ session('success') }}
+        </x-adminlte-alert>
+    @endif
 
-<ul class="list-group">
-    @forelse($users as $user)
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="mb-1">
-                    {{ $user->name }}
-                    <small class="text-muted">#{{ $user->id }}</small>
-                </h5>
-                <p class="mb-0 text-sm">
-                    <i class="fas fa-envelope mr-1" style="color: #869395;"></i>
-                    <a href="mailto:{{ $user->email }}">{{ $user->email }}</a>
-                </p>
-                <div class="mt-1">
-                    <span class="badge badge-info mr-1">{{ ucfirst($user->rol) }}</span>
-                    <span class="badge" style="background-color: #FF8C00; color: #fff;">
-                        {{ ucfirst($user->tipo_diabetes) }}
-                    </span>
-                </div>
-            </div>
-            <div class="d-flex align-items-center">
-                <a href="{{ route('admin.users.show', $user) }}"
-                   class="text-info mr-4"
-                   title="Ver usuario"
-                   style="font-size: 1.1rem;">
-                    <i class="fas fa-eye"></i>
+    <div class="card">
+      <div class="card-body table-responsive p-0">
+        <table id="users-table" class="table table-striped table-hover table-bordered mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Tipo Diabetes</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+          @foreach($users as $user)
+            <tr>
+              <td>{{ $user->id }}</td>
+              <td>{{ $user->name }}</td>
+              <td><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></td>
+              <td>{{ ucfirst($user->rol) }}</td>
+              <td>{{ ucfirst($user->tipo_diabetes) }}</td>
+              <td class="text-center">
+                <a href="{{ route('admin.users.show', $user) }}" class="text-info me-2" title="Ver usuario">
+                  <i class="fas fa-eye"></i>
                 </a>
-                <a href="{{ route('admin.users.edit', $user) }}"
-                   class="text-warning mr-3"
-                   title="Editar usuario"
-                   style="font-size: 1.1rem;">
-                    <i class="fas fa-edit"></i>
+                <a href="{{ route('admin.users.edit', $user) }}" class="text-warning me-2" title="Editar usuario">
+                  <i class="fas fa-edit"></i>
                 </a>
                 <form action="{{ route('admin.users.destroy', $user) }}"
-                      method="POST"
-                      onsubmit="return confirm('¿Eliminar usuario?');"
-                      style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="text-danger ml-3 p-0 border-0 bg-transparent"
-                            title="Eliminar usuario"
-                            style="font-size: 1.1rem;">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
+                      method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar usuario?');">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit"
+                          class="btn btn-link p-0 text-danger"
+                          title="Eliminar usuario">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
                 </form>
-            </div>
-        </li>
-    @empty
-        <li class="list-group-item text-center text-muted">
-            No hay usuarios registrados.
-        </li>
-    @endforelse
-</ul>
+              </td>
+            </tr>
+          @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+@stop
 
-<div class="mt-3 d-flex justify-content-center">
-    {{ $users->links() }}
-</div>
+{{-- DataTables JS + Inicialización --}}
+@section('js')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#users-table').DataTable({
+        paging:       true,
+        searching:    true,
+        ordering:     true,
+        info:         true,
+        lengthChange: false,
+        pageLength:   10,
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+        },
+        columnDefs: [
+          { orderable: false, targets: -1 } // desactivar orden en columna Acciones
+        ]
+      });
+    });
+  </script>
 @stop

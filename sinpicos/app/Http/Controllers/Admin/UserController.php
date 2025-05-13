@@ -9,10 +9,18 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // 1. Mostrar listado
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    // 1. Mostrar listado de usuarios (para DataTables cliente)
     public function index()
     {
-        $users = User::paginate(10);
+        // Traemos todos los usuarios para que DataTables haga
+        // paginación, búsqueda y orden en el cliente.
+        $users = User::orderBy('id', 'asc')->get();
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -42,13 +50,11 @@ class UserController extends Controller
             ->with('success', 'Usuario creado correctamente.');
     }
 
-  
-    // 4. Ver la información de un usuario
+    // 4. Ver un usuario
     public function show(User $user)
     {
         return view('admin.users.show', compact('user'));
     }
-
 
     // 5. Formulario de edición
     public function edit(User $user)
@@ -67,7 +73,7 @@ class UserController extends Controller
             'tipo_diabetes'  => 'required|string',
         ]);
 
-        if ($data['password'] ?? false) {
+        if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
