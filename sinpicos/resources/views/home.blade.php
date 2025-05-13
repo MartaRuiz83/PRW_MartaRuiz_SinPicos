@@ -147,7 +147,7 @@
           <h4 class="fw-bold mb-0" style="background: linear-gradient(90deg, #7d3ced, #c77dff); -webkit-background-clip: text; color: transparent;">
             {{ $type }}
           </h4>
-          <span class="badge bg-light text-danger ms-3">{{ round($sumCalories,1) }} kcal</span>
+          <span class="badge bg-light text-danger ms-3">Total {{ round($sumCalories,1) }} kcal</span>
         </div>
 
         @foreach($grouped[$type] as $meal)
