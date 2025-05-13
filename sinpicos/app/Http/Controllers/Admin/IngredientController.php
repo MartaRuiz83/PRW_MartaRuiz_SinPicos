@@ -9,12 +9,12 @@ use Illuminate\Http\Request;
 class IngredientController extends Controller
 {
     /**
-     * Mostrar listado de ingredientes.
+     * Mostrar listado de ingredientes (para DataTables cliente).
      */
     public function index()
     {
-        $ingredients = Ingredient::orderBy('id', 'asc')
-                                 ->paginate(10);
+        // Traemos **todos** los ingredientes
+        $ingredients = Ingredient::orderBy('id', 'asc')->get();
 
         return view('admin.ingredients.index', compact('ingredients'));
     }
