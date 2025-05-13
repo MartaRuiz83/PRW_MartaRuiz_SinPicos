@@ -166,7 +166,7 @@
         <div>
           {{-- Mostrar descripción como título si existe --}}
           @if(!empty($meal->description))
-            <h5 class="mb-2">{{ $meal->description }}</h5>
+           <h5 class="mb-2" style="color: #7d3ced;">{{ $meal->description }}</h5>
           @endif
 
           <p class="mb-1"><strong>
