@@ -114,7 +114,7 @@ class MealController extends Controller
     /**
      * 6) Actualiza la comida en BD (admin.meals.update).
      */
-    public function update(Request $request, Meal $meal)
+   public function update(Request $request, Meal $meal)
     {
         $data = $request->validate([
             'date'                   => 'required|date',
@@ -139,10 +139,18 @@ class MealController extends Controller
         }
         $meal->ingredients()->sync($pivot);
 
-        return redirect()->route('admin.meals.index')
-                         ->with('success', 'Comida actualizada correctamente');
-    }
+        // Si editamos desde /home, recibiremos 'date' oculto
+        if ($request->filled('date')) {
+            return redirect()
+                ->route('home', ['date' => $request->input('date')])
+                ->with('success', 'Comida actualizada correctamente.');
+        }
 
+        // Si no, volvemos al admin
+        return redirect()
+            ->route('admin.meals.index')
+            ->with('success', 'Comida actualizada correctamente.');
+    }
     /**
      * 7) Elimina la comida (admin.meals.destroy).
      */
