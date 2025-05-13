@@ -7,7 +7,9 @@ use App\Http\Controllers\MealController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\Admin\IngredientController;
-use App\Http\Controllers\Admin\RecomendationController;
+use App\Http\Controllers\PublicRecomendationController;
+use App\Http\Controllers\RecomendationController as PublicRecs;
+use App\Http\Controllers\Admin\RecomendationController as AdminRecs;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,60 +24,64 @@ use App\Http\Controllers\Admin\RecomendationController;
 Route::view('/', 'welcome')
      ->name('welcome');
 
-// 2) Fortify/Jetstream login, registro, etc (ya incluidas en service provider)
-//    Alias “dashboard” para no romper enlaces hard-codeados
+// 2) Sección pública de recomendaciones
+Route::get('/recomendaciones', [PublicRecomendationController::class, 'index'])
+     ->name('recomendaciones');
+
+
+// 3) Fortify/Jetstream (login, registro, etc.)
+//    Alias “dashboard” para no romper enlaces hardcodeados
 Route::middleware(['auth','verified'])
      ->get('/dashboard', fn() => redirect()->route('admin.dashboard'))
      ->name('dashboard');
 
-// 3) RUTAS DEL FRONTEND (sólo para usuarios logueados)
-//    - /home/{date?}   → listado público de comidas filtrado por fecha
-//    - /meals/create   → formulario para crear comida
+// 4) RUTAS DEL FRONTEND (solo usuarios autenticados)
+//    - /home/{date?}   → listado público de comidas (filtrado por fecha)
+//    - /meals/create   → formulario de creación
 //    - POST /meals     → guardar en BD
+//    - /statistics     → estadísticas de usuario
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/home/{date?}', [HomeController::class, 'index'])
+    Route::get('/home/{date?}',      [HomeController::class, 'index'])
          ->name('home');
 
-    Route::get('/meals/create', [MealController::class, 'create'])
+    Route::get('/meals/create',      [MealController::class, 'create'])
          ->name('meals.create');
 
-    Route::post('/meals', [MealController::class, 'store'])
+    Route::post('/meals',            [MealController::class, 'store'])
          ->name('meals.store');
 
-    // Estadísticas para usuarios logueados
-    Route::get('/statistics', [StatisticsController::class, 'index'])
+    Route::get('/statistics',        [StatisticsController::class, 'index'])
          ->name('statistics');
 });
 
-// 4) RUTAS DEL PANEL DE ADMIN (AdminLTE)
-//    Todas estas usan prefijo /admin y nombre admin.*
+// 5) RUTAS DEL PANEL DE ADMIN (AdminLTE)
+//    Prefijo /admin, nombre admin.*
 Route::middleware(['auth', 'verified'])
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {
 
-    // 4.1) Dashboard principal de AdminLTE
+    // 5.1) Dashboard AdminLTE
     Route::get('/dashboard', fn() => view('admin.dashboard'))
          ->name('dashboard');
 
-    // 4.2) CRUD Recomendaciones
-    Route::resource('recomendations', RecomendationController::class);
+    // 5.2) CRUD Recomendaciones
+    Route::resource('recomendations', AdminRecs::class);
 
-    // 4.3) CRUD Usuarios
+    // 5.3) CRUD Usuarios
     Route::resource('users', UserController::class);
 
-    // 4.4) CRUD Ingredientes
+    // 5.4) CRUD Ingredientes
     Route::resource('ingredients', IngredientController::class);
 
-    // 4.5) CRUD Comidas en admin (sin create/store, que están en frontend)
+    // 5.5) CRUD Comidas en admin (sin create/store, que están en frontend)
     Route::resource('meals', MealController::class)
          ->except(['create', 'store']);
 
-    // 4.6) Marcar tips como vistos
+    // 5.6) Marcar tips como vistos
     Route::post('/tips/showed/{tip}', function (Tip $tip) {
         $tip->showed = true;
         $tip->save();
         return redirect()->route('home', ['date' => now()->format('Y-m-d')]);
     })->name('tips.showed');
-
 });

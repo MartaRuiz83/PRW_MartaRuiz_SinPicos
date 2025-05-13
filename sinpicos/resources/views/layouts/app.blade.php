@@ -9,8 +9,8 @@
   {{-- Bootstrap CSS --}}
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  {{-- DataTables CSS (dentro de head) --}}
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  {{-- DataTables CSS --}}
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
 
   {{-- Google Font Pacifico --}}
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -59,7 +59,7 @@
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
         <a href="{{ route('meals.create') }}">Registro de Comidas</a>
         <a href="{{ route('statistics') }}">Estadísticas</a>
-        <a href="#">Sugerencias</a>
+        <a href="{{ route('recomendaciones') }}">Recomendaciones</a>
       </div>
       {{-- Usuario / Entrar --}}
       <div>
@@ -94,9 +94,10 @@
     @yield('content')
   </div>
 
-  {{-- jQuery + DataTables JS (antes de stack scripts) --}}
+  {{-- jQuery + DataTables JS + Bootstrap JS --}}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   @stack('scripts')
