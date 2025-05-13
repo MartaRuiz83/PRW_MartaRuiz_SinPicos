@@ -104,14 +104,14 @@
       radius: '60%',
       label: { formatter: '{b}: {d}%' },
       data: [
-        { value: carbs.reduce((a,b)=>a+b,0),    name: 'Carbohidratos' },
-        { value: proteins.reduce((a,b)=>a+b,0), name: 'Proteínas' },
-        { value: fats.reduce((a,b)=>a+b,0),     name: 'Grasas' }
+        { value: carbs.reduce((a,b)=>a+b,0),    name:'Carbohidratos' },
+        { value: proteins.reduce((a,b)=>a+b,0), name:'Proteínas' },
+        { value: fats.reduce((a,b)=>a+b,0),     name:'Grasas' }
       ]
     }]
   });
 
-  // 3) Bar chart de calorías
+  // 3) Bar chart de calorías con color lila
   const chart3 = echarts.init(document.getElementById('barChart'));
   chart3.setOption({
     tooltip: {},
@@ -119,7 +119,7 @@
     xAxis:   { type: 'category', data: labels },
     yAxis:   { type: 'value' },
     series: [
-      { name: 'Calorías', type: 'bar', data: calories }
+      { name:'Calorías', type:'bar', data: calories, itemStyle: { color: '#7d3ced' } }
     ]
   });
 </script>
