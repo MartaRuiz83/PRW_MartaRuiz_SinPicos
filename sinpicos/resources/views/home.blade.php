@@ -97,7 +97,12 @@
 
 {{-- Registro de Comidas agrupado por tipo --}}
 <div class="container mb-5">
-  <h2 class="h5 mb-3">Registro de Comidas</h2>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 mb-0">Registro de Comidas</h2>
+    <a href="{{ route('meals.create') }}" class="btn btn-primary">
+      <i class="ri-add-line"></i> Añadir Comida
+    </a>
+  </div>
 
   @forelse($order as $type)
     @if(isset($grouped[$type]) && $grouped[$type]->isNotEmpty())
@@ -111,9 +116,22 @@
       @endphp
 
       <div class="mb-4">
-        <h3 class="h6 text-uppercase mb-2" style="color: #7d3ced;">
-          {{ $type }} <small class="text-muted">({{ round($sumCalories,1) }} kcal)</small>
-        </h3>
+        <div class="d-flex align-items-center mb-2">
+          @php
+            $icon = match($type) {
+              'Desayuno' => 'ri-sun-line text-warning',
+              'Almuerzo' => 'ri-restaurant-line text-primary',
+              'Snack'    => 'ri-coffee-line text-info',
+              'Cena'     => 'ri-moon-line text-secondary',
+              default    => 'ri-clipboard-line text-muted',
+            };
+          @endphp
+          <i class="{{ $icon }} fs-3 me-2"></i>
+          <h4 class="fw-bold mb-0" style="background: linear-gradient(90deg, #7d3ced, #c77dff); -webkit-background-clip: text; color: transparent;">
+            {{ $type }}
+          </h4>
+          <span class="badge bg-light text-dark ms-3">{{ round($sumCalories,1) }} kcal</span>
+        </div>
 
         @foreach($grouped[$type] as $meal)
           @php
@@ -127,25 +145,18 @@
           <div class="card mb-2">
             <div class="card-body d-flex justify-content-between align-items-start">
               <div>
-                {{-- Descripción --}}
                 @if($meal->description)
                   <h5 class="mb-1" style="color: #000;">{{ $meal->description }}</h5>
                 @endif
-
-                {{-- Ingredientes --}}
                 <p class="mb-1"><strong>
                   @foreach($meal->ingredients as $ing)
                     {{ $ing->name }} ({{ $ing->pivot->quantity }} g)@if(!$loop->last), @endif
                   @endforeach
                 </strong></p>
-
-                {{-- Fecha y hora --}}
                 <p class="text-muted mb-1">
                   {{ \Carbon\Carbon::parse($meal->date)->format('d/m/Y') }}
                   — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
                 </p>
-
-                {{-- Datos nutricionales de la comida --}}
                 <p class="small mb-0">
                   Carbohidratos: {{ round($mealCarbs,1) }} g |
                   Proteínas: {{ round($mealProt,1) }} g |
