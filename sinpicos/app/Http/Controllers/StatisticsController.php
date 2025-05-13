@@ -13,22 +13,30 @@ class StatisticsController extends Controller
     {
         $user = Auth::user();
 
-        // 1) Últimos 7 días
+        // 1) Defino el rango de fechas: últimos 7 días
         $startDate = Carbon::today()->subDays(6);
         $endDate   = Carbon::today();
 
-        // 2) Traer comidas del usuario en ese rango
+        // 2) Traigo las comidas del usuario en ese rango
         $meals = Meal::with('ingredients')
             ->where('user_id', $user->id)
-            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->whereBetween('date', [
+                $startDate->toDateString(),
+                $endDate->toDateString()
+            ])
             ->get();
 
-        // 3) Agrupar y sumar macros por día
-        $daily = [];
+        // 3) Inicializo $daily y sumo macros por fecha
+        $daily = [];               // ← ¡Muy importante!
         foreach ($meals as $meal) {
             $d = $meal->date;
             if (!isset($daily[$d])) {
-                $daily[$d] = ['carbs'=>0, 'proteins'=>0, 'fats'=>0, 'calories'=>0];
+                $daily[$d] = [
+                    'carbs'    => 0,
+                    'proteins' => 0,
+                    'fats'     => 0,
+                    'calories' => 0,
+                ];
             }
             foreach ($meal->ingredients as $ing) {
                 $q = $ing->pivot->quantity;
@@ -39,20 +47,23 @@ class StatisticsController extends Controller
             }
         }
 
-        // 4) Preparar datos para las gráficas
+        // 4) Ordeno por fecha
         ksort($daily);
-        $labels   = array_keys($daily);
-        $carbs    = array_map(fn($v) => round($v['carbs'],1),    $daily);
-        $proteins = array_map(fn($v) => round($v['proteins'],1), $daily);
-        $fats     = array_map(fn($v) => round($v['fats'],1),     $daily);
-        $calories = array_map(fn($v) => round($v['calories'],1), $daily);
 
-        // 5) Totales acumulados
+        // 5) Preparo arrays para pasar a la vista (ECharts necesita arrays indexados 0,1,2…)
+        $labels   = array_values(array_keys($daily));
+        $carbs    = array_values(array_map(fn($v) => round($v['carbs'],   1), $daily));
+        $proteins = array_values(array_map(fn($v) => round($v['proteins'],1), $daily));
+        $fats     = array_values(array_map(fn($v) => round($v['fats'],    1), $daily));
+        $calories = array_values(array_map(fn($v) => round($v['calories'],1), $daily));
+
+        // 6) Totales acumulados
         $totalCarbs    = array_sum($carbs);
         $totalProteins = array_sum($proteins);
         $totalFats     = array_sum($fats);
         $totalCalories = array_sum($calories);
 
+        // 7) Envío todo a la vista
         return view('statistics', compact(
             'labels','carbs','proteins','fats','calories',
             'totalCarbs','totalProteins','totalFats','totalCalories',
