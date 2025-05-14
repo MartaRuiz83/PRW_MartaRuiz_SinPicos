@@ -1,12 +1,14 @@
 @extends('layouts.app')
- 
+
 @section('content')
-<div class="container py-4">
-  <h1 class="h3 fw-bold mb-3">Estadísticas personales</h1>
+<div class="container py-4 text-center">
+  <h1 class="h3 fw-bold mb-3">Aquí están tus estadísticas, {{ Auth::user()->name }}</h1>
   <p class="text-muted mb-4">
     Resumen de {{ $startDate->format('d/m/Y') }} a {{ $endDate->format('d/m/Y') }}
   </p>
- 
+</div>
+
+<div class="container py-4">
   {{-- RESUMEN MACROS + GLUCOSA --}}
   <div class="row row-cols-1 row-cols-md-5 g-4 mb-5">
     {{-- Macros --}}
@@ -25,7 +27,7 @@
         </div>
       </div>
     @endforeach
- 
+
     {{-- Glucosa --}}
     <div class="col">
       <div class="card h-100 text-center border-danger">
@@ -37,7 +39,7 @@
       </div>
     </div>
   </div>
- 
+
   {{-- GRÁFICAS PRINCIPALES --}}
   <div class="row gy-4 mb-5">
     {{-- Line chart de macros --}}
@@ -49,7 +51,7 @@
         </div>
       </div>
     </div>
- 
+
     {{-- Pie chart de macros --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100">
@@ -59,7 +61,7 @@
         </div>
       </div>
     </div>
- 
+
     {{-- Bar chart de calorías --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100">
@@ -69,8 +71,8 @@
         </div>
       </div>
     </div>
- 
-    {{-- Nueva gráfica: evolución glucosa --}}
+
+    {{-- Línea de glucosa --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100 border-danger">
         <div class="card-header text-danger">Glucosa diaria</div>
@@ -82,28 +84,25 @@
   </div>
 </div>
 @endsection
- 
+
 @push('scripts')
 <script>
-  // Etiquetas en formato DD/MM/YYYY
+  // Etiquetas DD/MM/YYYY
   const labels = @json($labels).map(d => {
-    const [y, m, day] = d.split('-');
+    const [y,m,day] = d.split('-');
     return `${day}/${m}/${y}`;
   });
- 
-  // Datos macros
+
+  // Datos
   const carbs    = @json($carbs);
   const proteins = @json($proteins);
   const fats     = @json($fats);
   const calories = @json($calories);
- 
-  // Datos glucosa
-  const glucoseLabels = labels;
-  const glucoseData   = @json($glucoseValues);
- 
-  // Paleta pastel: rosa, lila y turquesa
+  const glucoseData = @json($glucoseValues);
+
+  // Paleta pastel: rosa, lila, turquesa
   const pastelPalette = ['#BFA2E0', '#FF97B1', '#5CD6D5'];
- 
+
   // 1) Line chart macros
   echarts.init(document.getElementById('lineMacros')).setOption({
     color: pastelPalette,
@@ -117,8 +116,8 @@
       { name:'Grasas',         type:'line', data: fats }
     ]
   });
- 
-  // 2) Pie macros %
+
+  // 2) Pie chart macros %
   echarts.init(document.getElementById('pieMacros')).setOption({
     color: pastelPalette,
     tooltip: { trigger:'item' },
@@ -133,22 +132,24 @@
       ]
     }]
   });
- 
-  // 3) Bar calorías diarios con naranja oscuro
+
+  // 3) Bar chart calorías con naranja menos intenso
   echarts.init(document.getElementById('barCalories')).setOption({
     tooltip:{}, legend:{ data:['Calorías'] },
     xAxis:{ type:'category', data: labels },
     yAxis:{ type:'value' },
     series:[{
-      name:'Calorías', type:'bar', data: calories,
-      itemStyle:{ color: '#E67E22' }  // naranja oscuro
+      name:'Calorías',
+      type:'bar',
+      data: calories,
+      itemStyle:{ color: '#E67E22' }
     }]
   });
- 
+
   // 4) Line chart glucosa
   echarts.init(document.getElementById('lineGlucose')).setOption({
     tooltip:{ trigger:'axis' },
-    xAxis:{ type:'category', data: glucoseLabels },
+    xAxis:{ type:'category', data: labels },
     yAxis:{ type:'value', name:'mg/dL' },
     series:[{
       data: glucoseData,
