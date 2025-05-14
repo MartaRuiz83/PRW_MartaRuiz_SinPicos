@@ -104,17 +104,22 @@
 </div>
 
 {{-- Leyenda ultra-compacta --}}
-<div class="d-flex justify-content-center gap-4 mb-4 small">
-  <span class="d-flex align-items-center">
-    <i class="ri-checkbox-blank-circle-fill text-success fs-2 me-1"></i>Verde: margen
-  </span>
-  <span class="d-flex align-items-center">
-    <i class="ri-checkbox-blank-circle-fill text-warning fs-2 me-1"></i>Naranja: precaución
-  </span>
-  <span class="d-flex align-items-center">
-    <i class="ri-checkbox-blank-circle-fill text-danger fs-2 me-1"></i>Rojo: excedido
-  </span>
+{{-- Leyenda ultra-compacta reducida --}}
+<div class="d-flex justify-content-center gap-2 mb-3 small" style="font-size: .75rem;">
+  <div class="d-flex align-items-center">
+    <i class="ri-checkbox-blank-circle-fill text-success me-1" style="font-size: .75rem;"></i>
+    <span>Verde: Aún tienes margen en el consumo</span>
+  </div>
+  <div class="d-flex align-items-center">
+    <i class="ri-checkbox-blank-circle-fill text-warning me-1" style="font-size: .75rem;"></i>
+    <span>Naranja: Precaución, mantente dentro del rango</span>
+  </div>
+  <div class="d-flex align-items-center">
+    <i class="ri-checkbox-blank-circle-fill text-danger me-1" style="font-size: .75rem;"></i>
+    <span>Rojo: Te has excedido en el consumo</span>
+  </div>
 </div>
+
 
 
 
