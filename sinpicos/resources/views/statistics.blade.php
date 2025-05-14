@@ -104,7 +104,7 @@
   // Paleta pastel: rosa, lila y turquesa
   const pastelPalette = ['#8A2BE2', '#FF69B4', '#40E0D0'];
  
-  // 1) Line chart macros (3 series)
+  // 1) Line chart macros
   echarts.init(document.getElementById('lineMacros')).setOption({
     color: pastelPalette,
     tooltip: { trigger:'axis' },
@@ -134,18 +134,18 @@
     }]
   });
  
-  // 3) Bar calorías diarios (mantengo el morado principal)
+  // 3) Bar calorías diarios con naranja oscuro
   echarts.init(document.getElementById('barCalories')).setOption({
     tooltip:{}, legend:{ data:['Calorías'] },
     xAxis:{ type:'category', data: labels },
     yAxis:{ type:'value' },
     series:[{
       name:'Calorías', type:'bar', data: calories,
-      itemStyle:{ color: '#7d3ced' }
+      itemStyle:{ color: '#D35400' }  // naranja oscuro
     }]
   });
  
-  // 4) Line chart glucosa (mantengo estilo existente)
+  // 4) Line chart glucosa
   echarts.init(document.getElementById('lineGlucose')).setOption({
     tooltip:{ trigger:'axis' },
     xAxis:{ type:'category', data: glucoseLabels },
