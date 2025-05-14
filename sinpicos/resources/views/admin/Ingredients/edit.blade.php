@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-warning">
                         <i class="fas fa-save mr-1"></i> Guardar
                     </button>
                     <a href="{{ route('admin.ingredients.index') }}" class="btn btn-outline-secondary">

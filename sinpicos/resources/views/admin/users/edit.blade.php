@@ -7,9 +7,9 @@
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="card shadow-sm">
-            <div class="card-header bg-gradient-primary">
-                <h3 class="card-title text-white">Editar Usuario #{{ $user->id }}</h3>
-            </div>
+           <div class="card-header bg-gradient-warning">
+                <h3 class="card-title text-dark">Editar Usuario #{{ $user->id }}</h3>
+</div>
             <div class="card-body">
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
@@ -127,7 +127,7 @@
 
                     {{-- Botones --}}
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-warning">
                             <i class="fas fa-save mr-1"></i> Guardar
                         </button>
                         <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">

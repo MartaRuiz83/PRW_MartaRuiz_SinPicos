@@ -148,7 +148,7 @@
               <tr>
                 <td>{{ $g->hora }}</td>
                 <td>
-                  <span class="badge {{ $g->momento==='ANTES'?'bg-success':'bg-warning' }}">
+                  <span class="badge {{ $g->momento==='ANTES'?'bg-secondary':'bg-dark' }}">
                     {{ $g->momento==='ANTES'?'Antes de comer':'Después de comer' }}
                   </span>
                 </td>

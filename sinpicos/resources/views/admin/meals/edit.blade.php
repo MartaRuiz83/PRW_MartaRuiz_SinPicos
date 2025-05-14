@@ -5,7 +5,7 @@
 <div class="container my-5">
   <div class="card mx-auto" style="max-width: 700px;">
     {{-- Header en el mismo púrpura que el botón “Guardar” --}}
-    <div class="card-header text-white text-center" style="background-color: #6f42c1;">
+    <div class="card-header bg-warning text-dark text-center">
       <h2 class="mb-0">Editar Comida</h2>
     </div>
     <div class="card-body">
@@ -84,7 +84,7 @@
           <button
             type="button"
             id="add-ingredient"
-            class="btn btn-success mt-2"
+            class="btn btn-warning mt-2"
           >
             <i class="ri-add-line"></i> Añadir ingrediente
           </button>
@@ -95,7 +95,7 @@
 
         <div class="d-flex justify-content-end">
           <a href="{{ route('home') }}" class="btn btn-secondary me-2">Cancelar</a>
-          <button type="submit" class="btn btn-primary">Actualizar</button>
+          <button type="submit" class="btn btn-warning">Actualizar</button>
         </div>
       </form>
 
