@@ -16,14 +16,15 @@
       {{-- Texto centrado --}}
       <div class="text-center flex-grow-1">
         <h2 class="mb-1" style="color:#b91c1c;">
-           {{ Auth::user()->name }}, Aquí tienes tu control de Glucosa <i class="ri-drop-fill" style="color:#e74c3c;"></i>
+           {{ Auth::user()->name }}, Aquí tienes tu Control de Glucosa
+           <i class="ri-drop-fill" style="color:#e74c3c;"></i>
         </h2>
         <small class="text-muted">
           Datos de {{ \Carbon\Carbon::parse($date)->format('d-m-Y') }}
         </small>
       </div>
 
-      {{-- Botón día siguiente (si aplica) --}}
+      {{-- Botón día siguiente --}}
       @if($tomorrow)
         <a href="{{ route('glucosa.index', ['date' => $tomorrow]) }}"
            class="btn btn-outline-danger btn-lg ms-4" title="Siguiente día">
@@ -105,13 +106,21 @@
           <tbody>
             @forelse($glucosas as $g)
               @php
-                // ¿Está en rango según el momento?
+                // Comprobamos si está dentro de rango normal
                 if($g->momento === 'ANTES') {
-                  $inRange = $g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax;
+                  $normal = $g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax;
                 } else {
-                  $inRange = $g->nivel_glucosa < $postMax;
+                  $normal = $g->nivel_glucosa < $postMax;
+                }
+
+                // Si es hipoglucemia (<70) forzamos rojo
+                if($g->nivel_glucosa < 70) {
+                  $color = 'text-danger';
+                } else {
+                  $color = $normal ? 'text-success' : 'text-danger';
                 }
               @endphp
+
               <tr>
                 <td>{{ $g->hora }}</td>
                 <td>
@@ -119,7 +128,7 @@
                     {{ $g->momento }}
                   </span>
                 </td>
-                <td class="{{ $inRange ? 'text-success' : 'text-danger' }} fw-bold">
+                <td class="{{ $color }} fw-bold">
                   {{ $g->nivel_glucosa }} mg/dL
                 </td>
                 <td class="text-center">
