@@ -58,6 +58,7 @@
       <div class="menu d-flex align-items-center">
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
         <a href="{{ route('meals.create') }}">Registro de Comidas</a>
+        <a href="{{ route('glucosa.index') }}">Control Glucosa</a>
         <a href="{{ route('statistics') }}">Estadísticas</a>
         <a href="{{ route('recomendaciones') }}">Recomendaciones</a>
       </div>
