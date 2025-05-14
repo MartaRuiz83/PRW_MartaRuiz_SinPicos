@@ -31,7 +31,7 @@
             <input type="number" name="nivel_glucosa" id="nivel_glucosa" value="{{ old('nivel_glucosa', $glucosa->nivel_glucosa) }}" min="0" required class="form-control">
         </div>
 
-        <button type="submit" class="btn btn-success w-100">Actualizar Registro</button>
+        <button type="submit" class="btn btn-warning w-100">Actualizar Registro</button>
     </form>
 </div>
 @endsection

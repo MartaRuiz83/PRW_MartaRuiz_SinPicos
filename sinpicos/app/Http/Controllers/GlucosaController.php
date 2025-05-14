@@ -15,43 +15,46 @@ class GlucosaController extends Controller
 
     /**
      * Mostrar el listado de mediciones filtradas por fecha.
-     * @param  Request $request
-     * @param  string|null $date  Fecha en formato Y-m-d (opcional)
+     *
+     * @param  Request       $request
+     * @param  string|null   $date  Fecha en formato Y-m-d (opcional)
      */
     public function index(Request $request, $date = null)
     {
-        // 1) Definimos la fecha seleccionada (por defecto hoy)
+        // 1) Fecha seleccionada (por defecto hoy)
         $date = $date
             ? Carbon::parse($date)->startOfDay()
             : Carbon::today();
 
-        // 2) Recuperamos sólo las mediciones de ese día
+        // 2) Mediciones de ese día para el usuario autenticado
         $glucosas = Glucosa::where('usuario_id', auth()->id())
             ->whereDate('fecha', $date->toDateString())
             ->orderBy('hora')
             ->get();
 
-        // 3) Preparamos navegación de días
+        // 3) Navegación de días
         $yesterday = $date->copy()->subDay()->toDateString();
         $tomorrow  = $date->copy()->addDay();
-        // Sólo permitimos "mañana" hasta hoy
-        $tomorrow = $tomorrow->lte(Carbon::today())
+        $tomorrow  = $tomorrow->lte(Carbon::today())
             ? $tomorrow->toDateString()
             : null;
 
         return view('glucosa.index', compact(
-            'glucosas',
-            'date',
-            'yesterday',
-            'tomorrow'
+            'glucosas', 'date', 'yesterday', 'tomorrow'
         ));
     }
 
+    /**
+     * Mostrar formulario para crear nueva medición.
+     */
     public function create()
     {
         return view('glucosa.create');
     }
 
+    /**
+     * Almacenar nueva medición de glucosa.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -74,16 +77,19 @@ class GlucosaController extends Controller
             ->with('success', 'Medición añadida correctamente.');
     }
 
+    /**
+     * Mostrar formulario de edición.
+     */
     public function edit(Glucosa $glucosa)
     {
-        $this->authorize('update', $glucosa);
         return view('glucosa.edit', compact('glucosa'));
     }
 
+    /**
+     * Actualizar la medición.
+     */
     public function update(Request $request, Glucosa $glucosa)
     {
-        $this->authorize('update', $glucosa);
-
         $request->validate([
             'fecha'         => 'required|date',
             'hora'          => 'required',
@@ -92,7 +98,7 @@ class GlucosaController extends Controller
         ]);
 
         $glucosa->update($request->only(
-            'fecha','hora','momento','nivel_glucosa'
+            'fecha', 'hora', 'momento', 'nivel_glucosa'
         ));
 
         return redirect()
@@ -100,9 +106,11 @@ class GlucosaController extends Controller
             ->with('success', 'Registro actualizado correctamente.');
     }
 
+    /**
+     * Eliminar una medición.
+     */
     public function destroy(Glucosa $glucosa)
     {
-        $this->authorize('delete', $glucosa);
         $fecha = $glucosa->fecha;
         $glucosa->delete();
 
