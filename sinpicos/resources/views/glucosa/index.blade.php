@@ -83,6 +83,12 @@
   </div>
 
   {{-- TABLA DE REGISTROS --}}
+  @php
+    // Rangos objetivo
+    $preMin  = 80;
+    $preMax  = 130;
+    $postMax = 180;
+  @endphp
   <div class="card shadow-sm">
     <div class="card-body">
       <h4 class="mb-3" style="color:#b91c1c;">Historial</h4>
@@ -98,14 +104,24 @@
           </thead>
           <tbody>
             @forelse($glucosas as $g)
+              @php
+                // ¿Está en rango según el momento?
+                if($g->momento === 'ANTES') {
+                  $inRange = $g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax;
+                } else {
+                  $inRange = $g->nivel_glucosa < $postMax;
+                }
+              @endphp
               <tr>
                 <td>{{ $g->hora }}</td>
                 <td>
-                  <span class="badge {{ $g->momento=='ANTES'?'bg-danger':'bg-warning' }}">
+                  <span class="badge {{ $g->momento=='ANTES'?'bg-success':'bg-warning' }}">
                     {{ $g->momento }}
                   </span>
                 </td>
-                <td>{{ $g->nivel_glucosa }}</td>
+                <td class="{{ $inRange ? 'text-success' : 'text-danger' }} fw-bold">
+                  {{ $g->nivel_glucosa }} mg/dL
+                </td>
                 <td class="text-center">
                   <a href="{{ route('glucosa.edit',$g) }}" class="btn btn-sm btn-outline-warning">
                     <i class="ri-edit-2-fill"></i>
@@ -137,14 +153,13 @@
 
 @push('scripts')
 <script>
-  // Datos para ECharts (concatenación con . en PHP)
+  // Preparar datos para ECharts
   const data = @json(
     $glucosas->map(fn($g)=>[
       'label'=> $g->hora,
       'value'=> $g->nivel_glucosa,
     ])
   );
-
   const chartDom = document.getElementById('glucose-chart');
   const myChart  = echarts.init(chartDom);
   const option   = {
