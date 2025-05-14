@@ -226,7 +226,7 @@
 <script>
   const chart = echarts.init(document.getElementById('macronutrientesChart'));
   chart.setOption({
-    color: ['#8A2BE2', '#FF69B4', '#40E0D0'],
+    color: ['#BFA2E0', '#FF97B1', '#5CD6D5'],
     series:[{
       type:'pie',
       radius:['40%','70%'],
