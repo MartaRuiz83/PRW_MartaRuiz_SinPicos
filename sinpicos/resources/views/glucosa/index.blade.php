@@ -16,8 +16,8 @@
       {{-- Texto centrado --}}
       <div class="text-center flex-grow-1">
         <h2 class="mb-1" style="color:#b91c1c;">
-           {{ Auth::user()->name }}, Aquí tienes tu Control de Glucosa
-           <i class="ri-drop-fill" style="color:#e74c3c;"></i>
+          Aquí tienes tu Control de Glucosa, {{ Auth::user()->name }}
+          <i class="ri-drop-fill" style="color:#e74c3c;"></i>
         </h2>
         <small class="text-muted">
           Datos de {{ \Carbon\Carbon::parse($date)->format('d-m-Y') }}
@@ -26,10 +26,10 @@
 
       {{-- Botón día siguiente --}}
       @if($tomorrow)
-        <a href="{{ route('glucosa.index', ['date' => $tomorrow]) }}"
-           class="btn btn-outline-danger btn-lg ms-4" title="Siguiente día">
-          <i class="ri-arrow-right-line fs-3"></i>
-        </a>
+      <a href="{{ route('glucosa.index', ['date' => $tomorrow]) }}"
+         class="btn btn-outline-danger btn-lg ms-4" title="Siguiente día">
+        <i class="ri-arrow-right-line fs-3"></i>
+      </a>
       @endif
 
     </div>
@@ -83,6 +83,35 @@
     </div>
   </div>
 
+  {{-- CONSEJOS DE SEGURIDAD --}}
+  <div class="card mb-5 border-danger shadow-sm">
+    <div class="card-header bg-danger text-white">
+      <i class="ri-shield-check-fill me-2"></i> Consejos de Seguridad
+    </div>
+    <div class="card-body">
+      <div class="row">
+        {{-- Hipoglucemia --}}
+        <div class="col-md-6 mb-4">
+          <h5 class="text-danger"><i class="ri-heart-pulse-fill me-1"></i> ¿Hipoglucemia? (&lt; 70 mg/dL)</h5>
+          <ul class="ps-3 mb-0">
+            <li>Ingiere 15 g de carbohidratos de rápida absorción (glucosa, zumo).</li>
+            <li>Espera 15 min y vuelve a medir.</li>
+            <li>Si persiste, repite y contacta a tu médico.</li>
+          </ul>
+        </div>
+        {{-- Hiperglucemia --}}
+        <div class="col-md-6 mb-4">
+          <h5 class="text-danger"><i class="ri-flashlight-fill me-1"></i> ¿Hiperglucemia? (&gt; 180 mg/dL)</h5>
+          <ul class="ps-3 mb-0">
+            <li>Realiza ejercicio ligero (paseo 10–15 min).</li>
+            <li>Hidrátate con agua sin azúcar.</li>
+            <li>Revisa tu plan de insulina.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {{-- TABLA DE REGISTROS --}}
   @php
     // Rangos objetivo
@@ -106,36 +135,31 @@
           <tbody>
             @forelse($glucosas as $g)
               @php
-                // Comprobamos si está dentro de rango normal
-                if($g->momento === 'ANTES') {
+                // Comprobamos rango normal/hipoglucemia
+                if($g->momento==='ANTES') {
                   $normal = $g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax;
                 } else {
                   $normal = $g->nivel_glucosa < $postMax;
                 }
-
-                // Si es hipoglucemia (<70) forzamos rojo
-                if($g->nivel_glucosa < 70) {
-                  $color = 'text-danger';
-                } else {
-                  $color = $normal ? 'text-success' : 'text-danger';
-                }
+                $color = $g->nivel_glucosa < 70
+                  ? 'text-danger'
+                  : ($normal ? 'text-success' : 'text-danger');
               @endphp
-
               <tr>
                 <td>{{ $g->hora }}</td>
                 <td>
-                  <span class="badge {{ $g->momento=='ANTES'?'bg-success':'bg-warning' }}">
-                    {{ $g->momento }}
+                  <span class="badge {{ $g->momento==='ANTES'?'bg-success':'bg-warning' }}">
+                    {{ $g->momento==='ANTES'?'Antes de comer':'Después de comer' }}
                   </span>
                 </td>
                 <td class="{{ $color }} fw-bold">
                   {{ $g->nivel_glucosa }} mg/dL
                 </td>
                 <td class="text-center">
-                  <a href="{{ route('glucosa.edit',$g) }}" class="btn btn-sm btn-outline-warning">
+                  <a href="{{ route('glucosa.edit', $g) }}" class="btn btn-sm btn-outline-warning">
                     <i class="ri-edit-2-fill"></i>
                   </a>
-                  <form action="{{ route('glucosa.destroy',$g) }}" method="POST" class="d-inline"
+                  <form action="{{ route('glucosa.destroy', $g) }}" method="POST" class="d-inline"
                         onsubmit="return confirm('¿Eliminar este registro?');">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-outline-danger">
@@ -169,6 +193,7 @@
       'value'=> $g->nivel_glucosa,
     ])
   );
+
   const chartDom = document.getElementById('glucose-chart');
   const myChart  = echarts.init(chartDom);
   const option   = {
