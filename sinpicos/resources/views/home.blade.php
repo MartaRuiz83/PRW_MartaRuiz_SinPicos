@@ -78,16 +78,16 @@
           @switch($label)
             @case('carbohydrates')
               <h5 class="card-title">Carbohidratos</h5>
-              @break
+            @break
             @case('proteins')
               <h5 class="card-title">Proteínas</h5>
-              @break
+            @break
             @case('fats')
               <h5 class="card-title">Grasas</h5>
-              @break
+            @break
             @case('calories')
               <h5 class="card-title">Calorías</h5>
-              @break
+            @break
           @endswitch
 
           <h2 class="fw-bold {{ getColorClass($$label, $r['min'], $r['max']) }}">
@@ -103,6 +103,24 @@
   @endforeach
 </div>
 
+{{-- Leyenda de colores --}}
+<div class="container mb-4">
+  <h5 class="text-center mb-3">¿Qué significan los colores?</h5>
+  <div class="d-flex justify-content-center gap-5">
+    <div class="d-flex align-items-center">
+      <i class="ri-checkbox-blank-circle-fill text-success fs-4 me-2"></i>
+      <span>Por debajo del rango</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <i class="ri-checkbox-blank-circle-fill text-warning fs-4 me-2"></i>
+      <span>Dentro del rango</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <i class="ri-checkbox-blank-circle-fill text-danger fs-4 me-2"></i>
+      <span>Por encima del rango</span>
+    </div>
+  </div>
+</div>
 
 {{-- Gráfico de macronutrientes --}}
 <div class="card mb-4">
@@ -137,7 +155,7 @@
             $icon = match($type) {
               'Desayuno' => 'ri-sun-line text-warning',
               'Almuerzo' => 'ri-restaurant-line text-info',
-              'Snack'    => 'ri-apple-line text-success', 
+              'Snack'    => 'ri-apple-line text-success',
               'Cena'     => 'ri-moon-line text-secondary',
               default    => 'ri-clipboard-line text-muted',
             };
