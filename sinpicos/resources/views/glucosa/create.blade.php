@@ -71,10 +71,16 @@
              style="border-color:#e6b0aa;">
     </div>
 
-    {{-- Botón --}}
-    <button type="submit" class="btn btn-outline-danger w-100" style="border-width:2px;">
-      <i class="ri-drop-fill"></i> Registrar
-    </button>
+    {{-- Botones --}}
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn-outline-danger"
+              style="border-width:2px;">
+        <i class="ri-drop-fill"></i> Registrar
+      </button>
+      <a href="{{ route('glucosa.index') }}" class="btn btn-secondary">
+        <i class="ri-arrow-left-line"></i> Cancelar
+      </a>
+    </div>
   </form>
 </div>
 @endsection
