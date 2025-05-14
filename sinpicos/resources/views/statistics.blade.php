@@ -7,8 +7,9 @@
     Resumen de {{ $startDate->format('d/m/Y') }} a {{ $endDate->format('d/m/Y') }}
   </p>
 
-  {{-- Resumen acumulado --}}
-  <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+  {{-- RESUMEN MACROS + GLUCOSA --}}
+  <div class="row row-cols-1 row-cols-md-5 g-4 mb-5">
+    {{-- Macros --}}
     @foreach ([
       ['label'=>'Carbohidratos','value'=>$totalCarbs,'unit'=>'g'],
       ['label'=>'Proteínas','value'=>$totalProteins,'unit'=>'g'],
@@ -24,36 +25,57 @@
         </div>
       </div>
     @endforeach
+
+    {{-- Glucosa --}}
+    <div class="col">
+      <div class="card h-100 text-center border-danger">
+        <div class="card-body">
+          <h5 class="card-title text-danger">Glucosa</h5>
+          <h2 class="fw-bold">{{ number_format($avgGlucose,1) }} <small>mg/dL</small></h2>
+          <p class="mb-1">Mín {{ $minGlucose }} – Máx {{ $maxGlucose }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  {{-- Gráficas --}}
-  <div class="row gy-4">
+  {{-- GRÁFICAS PRINCIPALES --}}
+  <div class="row gy-4 mb-5">
     {{-- Line chart de macros --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100">
         <div class="card-header">Macros últimos 7 días</div>
         <div class="card-body" style="height:300px;">
-          <div id="lineChart" class="w-100 h-100"></div>
+          <div id="lineMacros" class="w-100 h-100"></div>
         </div>
       </div>
     </div>
 
-    {{-- Pie chart de distribución --}}
+    {{-- Pie chart de macros --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100">
         <div class="card-header">Distribución % de macros</div>
         <div class="card-body" style="height:300px;">
-          <div id="pieChart" class="w-100 h-100"></div>
+          <div id="pieMacros" class="w-100 h-100"></div>
         </div>
       </div>
     </div>
 
-    {{-- Bar chart de calorías diarios --}}
-    <div class="col-12">
-      <div class="card">
+    {{-- Bar chart de calorías --}}
+    <div class="col-12 col-lg-6">
+      <div class="card h-100">
         <div class="card-header">Calorías diarias</div>
         <div class="card-body" style="height:300px;">
-          <div id="barChart" class="w-100 h-100"></div>
+          <div id="barCalories" class="w-100 h-100"></div>
+        </div>
+      </div>
+    </div>
+
+    {{-- Nueva gráfica: evolución glucosa --}}
+    <div class="col-12 col-lg-6">
+      <div class="card h-100 border-danger">
+        <div class="card-header text-danger">Glucosa diaria</div>
+        <div class="card-body" style="height:300px;">
+          <div id="lineGlucose" class="w-100 h-100"></div>
         </div>
       </div>
     </div>
@@ -63,47 +85,43 @@
 
 @push('scripts')
 <script>
-  // Datos originales de fechas en formato YYYY-MM-DD
-  const rawLabels = @json($labels);
-  // Reformateo a DD/MM/YYYY para mostrar en eje X
-  const labels = rawLabels.map(dateStr => {
-    const parts = dateStr.split('-');
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  // Etiquetas en formato DD/MM/YYYY
+  const labels = @json($labels).map(d=>{
+    const [y,m,day] = d.split('-');
+    return `${day}/${m}/${y}`;
   });
 
+  // Datos macros
   const carbs    = @json($carbs);
   const proteins = @json($proteins);
   const fats     = @json($fats);
   const calories = @json($calories);
 
-  // 1) Line chart de macros
-  const chart1 = echarts.init(document.getElementById('lineChart'));
-  chart1.setOption({
-    tooltip: { trigger: 'axis' },
-    legend:  { data: ['Carbohidratos','Proteínas','Grasas'] },
-    xAxis:   { type: 'category', data: labels },
-    yAxis:   { type: 'value' },
+  // Datos glucosa
+  const glucoseLabels = labels;                   // mismos días
+  const glucoseData   = @json($glucoseValues);
+
+  // 1) Line chart macros
+  echarts.init(document.getElementById('lineMacros')).setOption({
+    tooltip:{ trigger:'axis' },
+    legend: { data:['Carbohidratos','Proteínas','Grasas'] },
+    xAxis:  { type:'category', data:labels },
+    yAxis:  { type:'value' },
     series: [
-      { name:'Carbohidratos', type:'line', data: carbs },
-      { name:'Proteínas',      type:'line', data: proteins },
-      { name:'Grasas',         type:'line', data: fats }
+      { name:'Carbohidratos', type:'line', data:carbs },
+      { name:'Proteínas',      type:'line', data:proteins },
+      { name:'Grasas',         type:'line', data:fats }
     ]
   });
 
-  // 2) Pie chart de porcentaje
-  const chart2 = echarts.init(document.getElementById('pieChart'));
-  chart2.setOption({
-    tooltip: { trigger: 'item' },
-    legend:  {
-      orient: 'vertical',
-      left: 'left',
-      data: ['Carbohidratos','Proteínas','Grasas']
-    },
-    series: [{
-      type: 'pie',
-      radius: '60%',
-      label: { formatter: '{b}: {d}%' },
-      data: [
+  // 2) Pie macros %
+  echarts.init(document.getElementById('pieMacros')).setOption({
+    tooltip:{ trigger:'item' },
+    legend:{ orient:'vertical', left:'left', data:['Carbohidratos','Proteínas','Grasas'] },
+    series:[{
+      type:'pie', radius:'60%',
+      label:{ formatter:'{b}: {d}%' },
+      data:[
         { value: carbs.reduce((a,b)=>a+b,0),    name:'Carbohidratos' },
         { value: proteins.reduce((a,b)=>a+b,0), name:'Proteínas' },
         { value: fats.reduce((a,b)=>a+b,0),     name:'Grasas' }
@@ -111,16 +129,29 @@
     }]
   });
 
-  // 3) Bar chart de calorías con color lila
-  const chart3 = echarts.init(document.getElementById('barChart'));
-  chart3.setOption({
-    tooltip: {},
-    legend:  { data: ['Calorías'] },
-    xAxis:   { type: 'category', data: labels },
-    yAxis:   { type: 'value' },
-    series: [
-      { name:'Calorías', type:'bar', data: calories, itemStyle: { color: '#7d3ced' } }
-    ]
+  // 3) Bar calorías diarios
+  echarts.init(document.getElementById('barCalories')).setOption({
+    tooltip:{}, legend:{ data:['Calorías'] },
+    xAxis:{ type:'category', data:labels },
+    yAxis:{ type:'value' },
+    series:[{
+      name:'Calorías', type:'bar', data:calories,
+      itemStyle:{ color:'#7d3ced' }
+    }]
+  });
+
+  // 4) Line chart glucosa
+  echarts.init(document.getElementById('lineGlucose')).setOption({
+    tooltip:{ trigger:'axis' },
+    xAxis:{ type:'category', data:glucoseLabels },
+    yAxis:{ type:'value', name:'mg/dL' },
+    series:[{
+      data: glucoseData,
+      type:'line',
+      smooth:true,
+      lineStyle:{ color:'#c0392b' },
+      areaStyle:{ color:'rgba(192,57,43,0.2)' }
+    }]
   });
 </script>
 @endpush

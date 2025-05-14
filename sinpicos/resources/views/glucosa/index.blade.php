@@ -16,7 +16,7 @@
       {{-- Texto centrado --}}
       <div class="text-center flex-grow-1">
         <h2 class="mb-1" style="color:#b91c1c;">
-          Bienvenido, {{ Auth::user()->name }}.
+           {{ Auth::user()->name }}, Aquí tienes tu control de Glucosa <i class="ri-drop-fill" style="color:#e74c3c;"></i>
         </h2>
         <small class="text-muted">
           Datos de {{ \Carbon\Carbon::parse($date)->format('d-m-Y') }}
