@@ -1,12 +1,12 @@
 @extends('layouts.app')
-
+ 
 @section('content')
 <div class="container py-4">
   <h1 class="h3 fw-bold mb-3">Estadísticas personales</h1>
   <p class="text-muted mb-4">
     Resumen de {{ $startDate->format('d/m/Y') }} a {{ $endDate->format('d/m/Y') }}
   </p>
-
+ 
   {{-- RESUMEN MACROS + GLUCOSA --}}
   <div class="row row-cols-1 row-cols-md-5 g-4 mb-5">
     {{-- Macros --}}
@@ -25,7 +25,7 @@
         </div>
       </div>
     @endforeach
-
+ 
     {{-- Glucosa --}}
     <div class="col">
       <div class="card h-100 text-center border-danger">
@@ -37,7 +37,7 @@
       </div>
     </div>
   </div>
-
+ 
   {{-- GRÁFICAS PRINCIPALES --}}
   <div class="row gy-4 mb-5">
     {{-- Line chart de macros --}}
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-
+ 
     {{-- Pie chart de macros --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100">
@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-
+ 
     {{-- Bar chart de calorías --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100">
@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-
+ 
     {{-- Nueva gráfica: evolución glucosa --}}
     <div class="col-12 col-lg-6">
       <div class="card h-100 border-danger">
@@ -82,42 +82,47 @@
   </div>
 </div>
 @endsection
-
+ 
 @push('scripts')
 <script>
   // Etiquetas en formato DD/MM/YYYY
-  const labels = @json($labels).map(d=>{
-    const [y,m,day] = d.split('-');
+  const labels = @json($labels).map(d => {
+    const [y, m, day] = d.split('-');
     return `${day}/${m}/${y}`;
   });
-
+ 
   // Datos macros
   const carbs    = @json($carbs);
   const proteins = @json($proteins);
   const fats     = @json($fats);
   const calories = @json($calories);
-
+ 
   // Datos glucosa
-  const glucoseLabels = labels;                   // mismos días
+  const glucoseLabels = labels;
   const glucoseData   = @json($glucoseValues);
-
-  // 1) Line chart macros
+ 
+  // Paleta pastel: rosa, lila y turquesa
+  const pastelPalette = ['#8A2BE2', '#FF69B4', '#40E0D0'];
+ 
+  // 1) Line chart macros (3 series)
   echarts.init(document.getElementById('lineMacros')).setOption({
-    tooltip:{ trigger:'axis' },
+    color: pastelPalette,
+    tooltip: { trigger:'axis' },
     legend: { data:['Carbohidratos','Proteínas','Grasas'] },
-    xAxis:  { type:'category', data:labels },
+    xAxis:  { type:'category', data: labels },
     yAxis:  { type:'value' },
     series: [
-      { name:'Carbohidratos', type:'line', data:carbs },
-      { name:'Proteínas',      type:'line', data:proteins },
-      { name:'Grasas',         type:'line', data:fats }
+      { name:'Carbohidratos', type:'line', data: carbs },
+      { name:'Proteínas',      type:'line', data: proteins },
+      { name:'Grasas',         type:'line', data: fats }
     ]
   });
-
+ 
   // 2) Pie macros %
   echarts.init(document.getElementById('pieMacros')).setOption({
-    tooltip:{ trigger:'item' },
-    legend:{ orient:'vertical', left:'left', data:['Carbohidratos','Proteínas','Grasas'] },
+    color: pastelPalette,
+    tooltip: { trigger:'item' },
+    legend: { orient:'vertical', left:'left', data:['Carbohidratos','Proteínas','Grasas'] },
     series:[{
       type:'pie', radius:'60%',
       label:{ formatter:'{b}: {d}%' },
@@ -128,22 +133,22 @@
       ]
     }]
   });
-
-  // 3) Bar calorías diarios
+ 
+  // 3) Bar calorías diarios (mantengo el morado principal)
   echarts.init(document.getElementById('barCalories')).setOption({
     tooltip:{}, legend:{ data:['Calorías'] },
-    xAxis:{ type:'category', data:labels },
+    xAxis:{ type:'category', data: labels },
     yAxis:{ type:'value' },
     series:[{
-      name:'Calorías', type:'bar', data:calories,
-      itemStyle:{ color:'#7d3ced' }
+      name:'Calorías', type:'bar', data: calories,
+      itemStyle:{ color: '#7d3ced' }
     }]
   });
-
-  // 4) Line chart glucosa
+ 
+  // 4) Line chart glucosa (mantengo estilo existente)
   echarts.init(document.getElementById('lineGlucose')).setOption({
     tooltip:{ trigger:'axis' },
-    xAxis:{ type:'category', data:glucoseLabels },
+    xAxis:{ type:'category', data: glucoseLabels },
     yAxis:{ type:'value', name:'mg/dL' },
     series:[{
       data: glucoseData,

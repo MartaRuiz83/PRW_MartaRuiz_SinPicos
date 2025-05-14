@@ -103,24 +103,21 @@
   @endforeach
 </div>
 
-{{-- Leyenda de colores --}}
-<div class="container mb-4">
-  <h5 class="text-center mb-3">¿Qué significan los colores?</h5>
-  <div class="d-flex justify-content-center gap-5">
-    <div class="d-flex align-items-center">
-      <i class="ri-checkbox-blank-circle-fill text-success fs-4 me-2"></i>
-      <span>Por debajo del rango</span>
-    </div>
-    <div class="d-flex align-items-center">
-      <i class="ri-checkbox-blank-circle-fill text-warning fs-4 me-2"></i>
-      <span>Dentro del rango</span>
-    </div>
-    <div class="d-flex align-items-center">
-      <i class="ri-checkbox-blank-circle-fill text-danger fs-4 me-2"></i>
-      <span>Por encima del rango</span>
-    </div>
-  </div>
+{{-- Leyenda ultra-compacta --}}
+<div class="d-flex justify-content-center gap-4 mb-4 small">
+  <span class="d-flex align-items-center">
+    <i class="ri-checkbox-blank-circle-fill text-success fs-2 me-1"></i>Verde: margen
+  </span>
+  <span class="d-flex align-items-center">
+    <i class="ri-checkbox-blank-circle-fill text-warning fs-2 me-1"></i>Naranja: precaución
+  </span>
+  <span class="d-flex align-items-center">
+    <i class="ri-checkbox-blank-circle-fill text-danger fs-2 me-1"></i>Rojo: excedido
+  </span>
 </div>
+
+
+
 
 {{-- Gráfico de macronutrientes --}}
 <div class="card mb-4">
@@ -229,6 +226,7 @@
 <script>
   const chart = echarts.init(document.getElementById('macronutrientesChart'));
   chart.setOption({
+    color: ['#8A2BE2', '#FF69B4', '#40E0D0'],
     series:[{
       type:'pie',
       radius:['40%','70%'],
