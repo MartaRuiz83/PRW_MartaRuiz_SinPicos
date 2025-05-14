@@ -29,7 +29,7 @@
 <div class="container py-4">
   <h2 class="h5 mb-4" style="color: #7d3ced;">Consejos del día</h2>
   <div class="row g-3">
-    @foreach($tips as $tip)
+    @foreach($tips->take(3) as $tip)
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm border-0 rounded-2">
           <div class="card-body d-flex flex-column justify-content-between">
@@ -75,7 +75,6 @@
     <div class="col">
       <div class="card h-100">
         <div class="card-body text-center">
-          {{-- Títulos en español --}}
           @switch($label)
             @case('carbohydrates')
               <h5 class="card-title">Carbohidratos</h5>
