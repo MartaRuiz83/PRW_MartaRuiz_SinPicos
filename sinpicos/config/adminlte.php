@@ -83,12 +83,23 @@ return [
     |
     */  
 
-        'logo'              => '<span style="color:#7c3aed; font-weight:700; font-style:italic">SinPicos</span>',          
-        'logo_img'          => 'images/Logo.png',           
-        'logo_img_class'    => 'brand-image', 
-        'logo_img_xl'       => null,
-        'logo_img_xl_class' => 'brand-image-xs',
-        'logo_img_alt'      => 'Logo',                     
+        // config/adminlte.php
+
+// ...
+
+ 'logo' => '
+      <img src="'.asset("images/Logo.png").'" 
+           style="height:30px; display:inline-block; vertical-align:middle;">
+      <img src="'.asset("images/Letras.png").'" 
+           style="height:45px; display:inline-block; vertical-align:middle; margin-left:-0.5rem;">
+    ',
+    'logo_img'           => null,
+    'logo_img_class'     => '',
+    'logo_img_xl'        => null,
+    'logo_img_xl_class'  => '',
+    'logo_img_alt'       => '',
+// ...
+         
 
 
     /*
