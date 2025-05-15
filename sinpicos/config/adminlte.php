@@ -85,7 +85,7 @@ return [
 
         'logo'              => '<span style="color:#7c3aed; font-weight:700; font-style:italic">SinPicos</span>',          
         'logo_img'          => 'images/Logo.png',           
-        'logo_img_class'    => 'brand-image img-circle elevation-3', 
+        'logo_img_class'    => 'brand-image', 
         'logo_img_xl'       => null,
         'logo_img_xl_class' => 'brand-image-xs',
         'logo_img_alt'      => 'Logo',                     
