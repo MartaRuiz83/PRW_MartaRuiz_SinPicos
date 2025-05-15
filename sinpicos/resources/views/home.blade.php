@@ -4,6 +4,15 @@
 
 <style>
   .text-orange { color: #FF6600; } /* Naranja intenso */
+  .btn-primary {
+    background-color: #7d3ced; /* Color actual */
+    border-color: #7d3ced;
+  }
+  .btn-primary:hover {
+  background-color: #5a1fa6; /* Púrpura oscuro */
+  border-color: #5a1fa6;
+}
+
 </style>
 
 <div class="container py-4">
