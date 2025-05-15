@@ -2,6 +2,10 @@
 
 @section('content')
 
+<style>
+  .text-orange { color: #FF6600; } /* Naranja intenso */
+</style>
+
 <div class="container py-4">
   <div class="card shadow-sm rounded-lg border-0">
     <div class="card-body d-flex align-items-center justify-content-between">
@@ -61,7 +65,7 @@
   ];
   function getColorClass($v,$min,$max){
     if($v<$min) return 'text-success';
-    if($v<$max) return 'text-warning';
+    if($v<$max) return 'text-orange';
     return 'text-danger';
   }
   // Agrupamos comidas y definimos orden
@@ -110,19 +114,17 @@
     <i class="ri-checkbox-blank-circle-fill text-success me-1" style="font-size: .75rem;"></i>
     <span>Verde: Aún tienes margen en el consumo</span>
   </div>
+
   <div class="d-flex align-items-center">
-    <i class="ri-checkbox-blank-circle-fill text-warning me-1" style="font-size: .75rem;"></i>
+    <i class="ri-checkbox-blank-circle-fill text-orange me-1" style="font-size: .75rem;"></i>
     <span>Naranja: Precaución, mantente dentro del rango</span>
   </div>
+
   <div class="d-flex align-items-center">
     <i class="ri-checkbox-blank-circle-fill text-danger me-1" style="font-size: .75rem;"></i>
     <span>Rojo: Te has excedido en el consumo</span>
   </div>
 </div>
-
-
-
-
 
 {{-- Gráfico de macronutrientes --}}
 <div class="card mb-4">
@@ -166,7 +168,6 @@
           <h4 class="fw-bold mb-0" style="background: linear-gradient(90deg, #7d3ced, #c77dff); -webkit-background-clip: text; color: transparent;">
             {{ $type }}
           </h4>
-          <span class="badge bg-light text-danger ms-3">Total {{ round($sumCalories,1) }} kcal</span>
         </div>
 
         @foreach($grouped[$type] as $meal)

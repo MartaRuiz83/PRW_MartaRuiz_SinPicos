@@ -148,10 +148,13 @@
               <tr>
                 <td>{{ $g->hora }}</td>
                 <td>
-                  <span class="badge {{ $g->momento==='ANTES'?'bg-secondary':'bg-dark' }}">
-                    {{ $g->momento==='ANTES'?'Antes de comer':'Después de comer' }}
-                  </span>
+                  @if($g->momento === 'ANTES')
+                    <i class="ri-apple-fill text-danger me-1"></i><small class="text-muted">Antes</small>
+                  @else
+                    <i class="ri-apple-line text-danger me-1"></i><small class="text-muted">Después</small>
+                   @endif
                 </td>
+
                 <td class="{{ $color }} fw-bold">
                   {{ $g->nivel_glucosa }} mg/dL
                 </td>
