@@ -3,7 +3,7 @@
 @section('content')
 
 <style>
-  .text-orange { color: #FF6600; } /* Naranja intenso */
+  .text-orange { color:  #FF5722 } /* Naranja intenso */
   .btn-primary {
     background-color: #7d3ced; /* Color actual */
     border-color: #7d3ced;
