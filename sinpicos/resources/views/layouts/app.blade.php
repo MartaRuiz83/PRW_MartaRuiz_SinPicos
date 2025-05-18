@@ -55,8 +55,9 @@
         <h1 class="logo-text mb-0">SinPicos</h1>
       </a>
       {{-- Menú --}}
-      <div class="menu d-flex align-items-center">
-        @if (auth()->user()?->rol == 'Administrador')
+      @if(auth()->user())
+        <div class="menu d-flex align-items-center">
+        @if (auth()->user()->rol == 'Administrador')
           <a href="{{ route('admin.dashboard') }}">Admin</a>
         @endif
         <a href="{{ route('meals.create') }}">Registro de Comidas</a>
@@ -64,6 +65,7 @@
         <a href="{{ route('statistics') }}">Estadísticas</a>
         <a href="{{ route('recomendaciones') }}">Recomendaciones</a>
       </div>
+      @endif
       {{-- Usuario / Entrar --}}
       <div>
         @auth
