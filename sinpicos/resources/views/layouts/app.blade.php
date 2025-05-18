@@ -69,18 +69,36 @@
       {{-- Menú --}}
       @if(auth()->user())
         <div class="menu d-flex align-items-center">
-        @if (auth()->user()->rol == 'Administrador')
-           <a href="{{ route('admin.dashboard') }}"
-   class="btn btn-sm admin-hover ms-3">
-  <i class="ri-shield-check-line"></i> Admin
-</a>
+  @if(auth()->user()->rol == 'Administrador')
+    <a href="{{ route('admin.dashboard') }}"
+       class="btn btn-sm admin-hover ms-3">
+      {{-- Icono móvil | Texto desktop --}}
+      <i class="ri-shield-check-line d-inline d-md-none fs-5"></i>
+      <span class="d-none d-md-inline">Admin</span>
+    </a>
+  @endif
 
-        @endif
-        <a href="{{ route('home') }}">Inicio</a>
-        <a href="{{ route('glucosa.index') }}">Control Glucosa</a>
-        <a href="{{ route('statistics') }}">Estadísticas</a>
-        <a href="{{ route('recomendaciones') }}">Recomendaciones</a>
-      </div>
+  <a href="{{ route('home') }}" class="menu-link ms-3">
+    <i class="ri-home-line d-inline d-md-none fs-5"></i>
+    <span class="d-none d-md-inline">Inicio</span>
+  </a>
+
+  <a href="{{ route('glucosa.index') }}" class="menu-link ms-3">
+    <i class="ri-heart-pulse-line d-inline d-md-none fs-5"></i>
+    <span class="d-none d-md-inline">Control Glucosa</span>
+  </a>
+
+  <a href="{{ route('statistics') }}" class="menu-link ms-3">
+    <i class="ri-bar-chart-line d-inline d-md-none fs-5"></i>
+    <span class="d-none d-md-inline">Estadísticas</span>
+  </a>
+
+  <a href="{{ route('recomendaciones') }}" class="menu-link ms-3">
+    <i class="ri-lightbulb-line d-inline d-md-none fs-5"></i>
+    <span class="d-none d-md-inline">Recomendaciones</span>
+  </a>
+</div>
+
       @endif
       {{-- Usuario / Entrar --}}
       <div>
