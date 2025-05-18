@@ -10,13 +10,15 @@ use Carbon\Carbon;
 
 class StatisticsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
         // 1) Rango de fechas: últimos 7 días
-        $startDate = Carbon::today()->subDays(6);
-        $endDate   = Carbon::today();
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
+        $startDate = $startDate ? Carbon::parse($startDate) : Carbon::today()->subDays(6);
+        $endDate   = $endDate   ? Carbon::parse($endDate)   : Carbon::today();
 
         // 2) Traer comidas con ingredientes (fijarse en user_id, no usuario_id)
         $meals = Meal::with('ingredients')
