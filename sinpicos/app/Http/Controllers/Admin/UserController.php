@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Middleware\ControlAdmin;
 
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(ControlAdmin::class); // Middleware para verificar rol
     }
 
     // 1. Mostrar listado de usuarios (para DataTables cliente)

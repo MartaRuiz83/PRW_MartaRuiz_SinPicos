@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class IngredientController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('controladmin'); // Middleware para verificar rol
+    }
     /**
      * Mostrar listado de ingredientes (para DataTables cliente).
      */

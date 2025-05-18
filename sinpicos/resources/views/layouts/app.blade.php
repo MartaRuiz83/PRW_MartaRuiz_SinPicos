@@ -56,7 +56,9 @@
       </a>
       {{-- Menú --}}
       <div class="menu d-flex align-items-center">
-        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+        @if (auth()->user()?->rol == 'Administrador')
+          <a href="{{ route('admin.dashboard') }}">Admin</a>
+        @endif
         <a href="{{ route('meals.create') }}">Registro de Comidas</a>
         <a href="{{ route('glucosa.index') }}">Control Glucosa</a>
         <a href="{{ route('statistics') }}">Estadísticas</a>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Tip;
+use App\Http\Middleware\ControlAdmin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MealController;
@@ -72,7 +73,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // 5) RUTAS DEL PANEL DE ADMIN (AdminLTE)
 //    Prefijo /admin, nombre admin.*
-Route::middleware(['auth', 'verified'])
+Route::middleware(['auth', 'verified', ControlAdmin::class])
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {

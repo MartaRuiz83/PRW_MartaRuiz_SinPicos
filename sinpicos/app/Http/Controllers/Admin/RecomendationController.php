@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Recomendation;
 use Illuminate\Http\Request;
+use App\Models\Recomendation;
+use App\Http\Controllers\Controller;
+use App\Http\Middleware\ControlAdmin;
 
 class RecomendationController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(ControlAdmin::class); // Middleware para verificar rol
     }
 
     /**
