@@ -42,6 +42,18 @@
     }
     /* Ocultar el caret azul de dropdown */
     .dropdown-toggle::after { display:none !important; }
+
+    /* Botón Admin con hover lila */
+     .admin-hover{
+       border: 1px solid #7c3aed !important;
+    }
+    .admin-hover:hover {
+      background-color: #7c3aed !important;
+      color: #fff !important;
+      border-color: #7c3aed !important;
+     
+    }
+
   </style>
 </head>
 <body>
@@ -58,9 +70,13 @@
       @if(auth()->user())
         <div class="menu d-flex align-items-center">
         @if (auth()->user()->rol == 'Administrador')
-          <a href="{{ route('admin.dashboard') }}">Admin</a>
+           <a href="{{ route('admin.dashboard') }}"
+   class="btn btn-sm admin-hover ms-3">
+  <i class="ri-shield-check-line"></i> Admin
+</a>
+
         @endif
-        <a href="{{ route('meals.create') }}">Registro de Comidas</a>
+        <a href="{{ route('home') }}">Inicio</a>
         <a href="{{ route('glucosa.index') }}">Control Glucosa</a>
         <a href="{{ route('statistics') }}">Estadísticas</a>
         <a href="{{ route('recomendaciones') }}">Recomendaciones</a>
