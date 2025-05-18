@@ -69,15 +69,17 @@
       {{-- Menú --}}
       @if(auth()->user())
         <div class="menu d-flex align-items-center">
-  @if(auth()->user()->rol == 'Administrador')
-    <a href="{{ route('admin.dashboard') }}"
-       class="btn btn-sm admin-hover ms-3">
-      {{-- Icono móvil | Texto desktop --}}
-      <i class="ri-shield-check-line d-inline d-md-none fs-5"></i>
-      <span class="d-none d-md-inline">Admin</span>
-    </a>
-  @endif
-
+ @if(auth()->user()->rol == 'Administrador')
+  <a href="{{ route('admin.dashboard') }}"
+     class="btn btn-sm admin-hover ms-3 d-flex align-items-center">
+    {{-- Icono móvil (solo en <768px) --}}
+    <i class="ri-shield-check-line d-inline d-md-none fs-5"></i>
+    {{-- Icono escritorio (oculto en móvil) --}}
+    <i class="ri-shield-line d-none d-md-inline me-1 fs-5"></i>
+    {{-- Texto sólo en escritorio --}}
+    <span class="d-none d-md-inline">Admin</span>
+  </a>
+@endif
   <a href="{{ route('home') }}" class="menu-link ms-3">
     <i class="ri-home-line d-inline d-md-none fs-5"></i>
     <span class="d-none d-md-inline">Inicio</span>
