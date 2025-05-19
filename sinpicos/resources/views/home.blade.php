@@ -54,7 +54,7 @@
             </div>
             <form action="{{ route('admin.tips.showed', $tip) }}"
                   method="POST"
-                  class="mt-3 text-end mark-seen-form">
+                  class="mt-3 text-end">
               @csrf
               <button type="submit" class="btn btn-sm btn-outline-success">
                 Marcar como visto
@@ -153,15 +153,6 @@
 
   @foreach($order as $type)
     @if(isset($grouped[$type]) && $grouped[$type]->isNotEmpty())
-      @php
-        // Calculamos calorías totales para el grupo
-        $sumCalories = $grouped[$type]->reduce(function($carry, $meal){
-          return $carry + $meal->ingredients->reduce(function($c2, $ing){
-            return $c2 + (($ing->calories ?? 0) * $ing->pivot->quantity / 100);
-          }, 0);
-        }, 0);
-      @endphp
-
       <div class="mb-4">
         <div class="d-flex align-items-center mb-2">
           @php
@@ -174,25 +165,20 @@
             };
           @endphp
           <i class="{{ $icon }} fs-3 me-2"></i>
-          <h4 class="fw-bold mb-0" style="background: linear-gradient(90deg, #7d3ced, #c77dff); -webkit-background-clip: text; color: transparent;">
+          <h4 class="fw-bold mb-0"
+              style="background: linear-gradient(90deg, #7d3ced, #c77dff);
+                     -webkit-background-clip: text;
+                     color: transparent;">
             {{ $type }}
           </h4>
         </div>
 
         @foreach($grouped[$type] as $meal)
-          @php
-            // Calculamos macros de esta comida
-            $mealCarbs = $meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->carbohydrates ?? 0) * $ing->pivot->quantity/100), 0);
-            $mealProt  = $meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->proteins      ?? 0) * $ing->pivot->quantity/100), 0);
-            $mealFats  = $meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->fats          ?? 0) * $ing->pivot->quantity/100), 0);
-            $mealCals  = $meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->calories      ?? 0) * $ing->pivot->quantity/100), 0);
-          @endphp
-
           <div class="card mb-2">
             <div class="card-body d-flex justify-content-between align-items-start">
               <div>
                 @if($meal->description)
-                  <h5 class="mb-1" style="color: #000;">{{ $meal->description }}</h5>
+                  <h5 class="mb-1">{{ $meal->description }}</h5>
                 @endif
                 <p class="mb-1"><strong>
                   @foreach($meal->ingredients as $ing)
@@ -204,10 +190,10 @@
                   — {{ \Carbon\Carbon::parse($meal->time)->format('H:i') }}
                 </p>
                 <p class="small mb-0">
-                  Carbohidratos: {{ round($mealCarbs,1) }} g |
-                  Proteínas: {{ round($mealProt,1) }} g |
-                  Grasas: {{ round($mealFats,1) }} g |
-                  Calorías: {{ round($mealCals,1) }} kcal
+                  Carbohidratos: {{ round($meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->carbohydrates ?? 0)*$ing->pivot->quantity/100),0),1) }} g |
+                  Proteínas: {{ round($meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->proteins      ?? 0)*$ing->pivot->quantity/100),0),1) }} g |
+                  Grasas:      {{ round($meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->fats          ?? 0)*$ing->pivot->quantity/100),0),1) }} g |
+                  Calorías:    {{ round($meal->ingredients->reduce(fn($c,$ing)=> $c + (($ing->calories      ?? 0)*$ing->pivot->quantity/100),0),1) }} kcal
                 </p>
               </div>
               <div class="d-flex">
@@ -219,8 +205,11 @@
                       method="POST"
                       class="delete-form">
                   @csrf @method('DELETE')
-                  <input type="hidden" name="date" value="{{ $dates['today']->format('Y-m-d') }}">
-                  <button type="submit" class="btn btn-link text-danger p-0" title="Eliminar">
+                  <input type="hidden" name="date"
+                         value="{{ $dates['today']->format('Y-m-d') }}">
+                  <button type="submit"
+                          class="btn btn-link text-danger p-0"
+                          title="Eliminar">
                     <i class="ri-delete-bin-2-line fs-4"></i>
                   </button>
                 </form>
@@ -241,17 +230,21 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    // Mostrar alerta de éxito si existe
+    // Mostrar alerta de éxito si existe, excepto tras editar
     @if(session('success'))
-      Swal.fire({
-        icon: 'success',
-        title: '¡Éxito!',
-        text: @json(session('success')),
-        confirmButtonText: 'Aceptar'
-      });
+      let msg = @json(session('success'));
+      if (!msg.toLowerCase().includes('actualizada')) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: msg,
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#28a745'
+        });
+      }
     @endif
 
-    // Confirmación para eliminación de comidas
+    // Confirmación para eliminación de comidas (botón rojo)
     document.querySelectorAll('.delete-form').forEach(form => {
       form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -260,29 +253,14 @@
           text: "¡Esta acción no se puede deshacer!",
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#6c757d',
           confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'Cancelar'
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#dc3545',
+          cancelButtonColor:  '#6c757d'
         }).then(result => {
           if (result.isConfirmed) {
             form.submit();
           }
-        });
-      });
-    });
-
-    // Confirmación para marcar consejos como vistos
-    document.querySelectorAll('.mark-seen-form').forEach(form => {
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        Swal.fire({
-          icon: 'info',
-          title: 'Consejo marcado',
-          text: 'Has marcado este consejo como visto.',
-          confirmButtonText: 'OK'
-        }).then(() => {
-          form.submit();
         });
       });
     });

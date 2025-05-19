@@ -92,7 +92,7 @@
       <div class="row">
         {{-- Hipoglucemia --}}
         <div class="col-md-6 mb-4">
-          <h5 class="text-danger"><i class="ri-heart-pulse-fill me-1"></i> ¿Hipoglucemia? (< 70 mg/dL)</h5>
+          <h5 class="text-danger"><i class="ri-heart-pulse-fill me-1"></i> ¿Hipoglucemia? (&lt; 70 mg/dL)</h5>
           <ul class="ps-3 mb-0">
             <li>Ingiere 15 g de carbohidratos de rápida absorción (glucosa, zumo).</li>
             <li>Espera 15 min y vuelve a medir.</li>
@@ -101,7 +101,7 @@
         </div>
         {{-- Hiperglucemia --}}
         <div class="col-md-6 mb-4">
-          <h5 class="text-danger"><i class="ri-flashlight-fill me-1"></i> ¿Hiperglucemia? (> 180 mg/dL)</h5>
+          <h5 class="text-danger"><i class="ri-flashlight-fill me-1"></i> ¿Hiperglucemia? (&gt; 180 mg/dL)</h5>
           <ul class="ps-3 mb-0">
             <li>Realiza ejercicio ligero (paseo 10–15 min).</li>
             <li>Hidrátate con agua sin azúcar.</li>
@@ -114,7 +114,6 @@
 
   {{-- TABLA DE REGISTROS --}}
   @php
-    // Rangos objetivo
     $preMin  = 80;
     $preMax  = 130;
     $postMax = 180;
@@ -135,14 +134,12 @@
           <tbody>
             @forelse($glucosas as $g)
               @php
-                if ($g->momento === 'ANTES') {
-                  $normal = $g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax;
-                } else {
-                  $normal = $g->nivel_glucosa < $postMax;
-                }
-                $color = $g->nivel_glucosa < 70
-                  ? 'text-danger'
-                  : ($normal ? 'text-success' : 'text-danger');
+                $normal = $g->momento==='ANTES'
+                          ? ($g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax)
+                          : ($g->nivel_glucosa < $postMax);
+                $color  = $g->nivel_glucosa < 70
+                          ? 'text-danger'
+                          : ($normal ? 'text-success' : 'text-danger');
               @endphp
               <tr>
                 <td>{{ $g->hora }}</td>
@@ -157,13 +154,16 @@
                   {{ $g->nivel_glucosa }} mg/dL
                 </td>
                 <td class="text-center">
-                  <a href="{{ route('glucosa.edit', $g) }}" class="btn btn-sm btn-outline-warning">
+                  <a href="{{ route('glucosa.edit', $g) }}"
+                     class="btn btn-sm btn-outline-warning"
+                     title="Editar">
                     <i class="ri-edit-2-fill"></i>
                   </a>
-                  <form action="{{ route('glucosa.destroy', $g) }}" method="POST"
+                  <form action="{{ route('glucosa.destroy', $g) }}"
+                        method="POST"
                         class="d-inline delete-form">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger">
+                    <button class="btn btn-sm btn-outline-danger" title="Eliminar">
                       <i class="ri-delete-bin-5-fill"></i>
                     </button>
                   </form>
@@ -191,67 +191,44 @@
 
   <!-- 2) Tus scripts de ECharts -->
   <script>
-    // Preparar datos para ECharts
-    const data = @json(
-      $glucosas->map(fn($g)=>[
-        'label'=> $g->hora,
-        'value'=> $g->nivel_glucosa,
-      ])
-    );
-
-    const chartDom = document.getElementById('glucose-chart');
-    const myChart  = echarts.init(chartDom);
-    const option   = {
-      color: ['#b91c1c'],
-      tooltip: { trigger: 'axis' },
-      xAxis: {
-        type: 'category',
-        data: data.map(d=>d.label),
-        axisLabel: { color: '#555' }
-      },
-      yAxis: {
-        type: 'value',
-        name: 'mg/dL',
-        axisLabel: { color: '#555' }
-      },
-      series: [{
-        data: data.map(d=>d.value),
-        type: 'line',
-        smooth: true,
-        areaStyle: { color: 'rgba(185,28,28,0.2)' }
-      }]
-    };
-    myChart.setOption(option);
+    const data = @json($glucosas->map(fn($g)=>['label'=>$g->hora,'value'=>$g->nivel_glucosa]));
+    const myChart = echarts.init(document.getElementById('glucose-chart'));
+    myChart.setOption({
+      color:['#b91c1c'],
+      tooltip:{ trigger:'axis' },
+      xAxis:{ type:'category', data: data.map(d=>d.label), axisLabel:{ color:'#555' } },
+      yAxis:{ type:'value', name:'mg/dL', axisLabel:{ color:'#555' } },
+      series:[{ data: data.map(d=>d.value), type:'line', smooth:true, areaStyle:{ color:'rgba(185,28,28,0.2)' } }]
+    });
   </script>
 
   <!-- 3) SweetAlert2 para éxito y confirmación de borrado -->
   <script>
-    // Mostrar alerta de éxito si viene en sesión
-    @if(session('success'))
+    // Mostrar alerta de éxito si no viene de editar
+    @if(session('success') && session('success') !== 'Registro actualizado correctamente.')
       Swal.fire({
-        icon: 'success',
-        title: '¡Éxito!',
-        text: @json(session('success')),
-        confirmButtonText: 'Aceptar'
+        icon:'success',
+        title:'¡Éxito!',
+        text:@json(session('success')),
+        confirmButtonText:'Aceptar',
+        confirmButtonColor:'#28a745'
       });
     @endif
 
-    // Interceptar formularios de borrado
-    document.querySelectorAll('.delete-form').forEach(form => {
-      form.addEventListener('submit', function(e) {
+    // Confirmación de borrado (botón rojo)
+    document.querySelectorAll('.delete-form').forEach(form=>{
+      form.addEventListener('submit', e=>{
         e.preventDefault();
         Swal.fire({
-          title: '¿Eliminar este registro?',
-          text: "¡Esta acción no se puede deshacer!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'Cancelar'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            form.submit();
-          }
-        });
+          title:'¿Eliminar este registro?',
+          text:"¡Esta acción no se puede deshacer!",
+          icon:'warning',
+          showCancelButton:true,
+          confirmButtonText:'Sí, eliminar',
+          cancelButtonText:'Cancelar',
+          confirmButtonColor:'#dc3545',
+          cancelButtonColor:'#6c757d'
+        }).then(result=>{ if(result.isConfirmed) form.submit() });
       });
     });
   </script>
