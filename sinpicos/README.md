@@ -1,61 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SinPicos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Un gestor de comidas para diabéticos que permite registrar niveles de glucosa, planificar comidas con control de macros, y recibir recomendaciones nutricionales personalizadas.
 
-## About Laravel
+## Tabla de contenidos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Instalación](#instalación)  
+- [Uso](#uso)  
+- [Arquitectura](#arquitectura)  
+- [Base de datos](#base-de-datos)   
+- [Tecnologías](#tecnologías)  
+- [Autor](#autor)  
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Instalación
 
-## Learning Laravel
+1. Clona este repositorio  
+  
+    git clone https://github.com/tu-usuario/SinPicos.git
+    cd SinPicos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. Intala dependencias de PHP y Node
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    composer install
+    npm install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. Configura el entorno
 
-## Laravel Sponsors
+    cp .env.example .env
+    php artisan key:generate
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. Prepara la base de datos
 
-### Premium Partners
+    - Crea la base de datos sinpicos en MySQL
+    - Ejecuta migraciones: 
+        php artisan migrate
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+5. Arranca el servidor de desarrollo
 
-## Contributing
+    php artisan serve
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Uso
 
-## Code of Conduct
+    Accede en tu navegador a: http://127.0.0.1:8000
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Arquitectura
 
-## Security Vulnerabilities
+    SinPicos/
+    ├─ app/                 # Lógica de negocio (Laravel)
+    ├─ bootstrap/           # Arranque de la aplicación
+    ├─ config/              # Configuraciones generales
+    ├─ database/            # Migraciones y seeders
+    ├─ public/              # Punto de entrada web
+    ├─ resources/           # Vistas Blade, assets y componentes
+    ├─ routes/              # Definición de rutas
+    ├─ tests/               # PHPUnit y Cypress
+    ├─ composer.json        # Dependencias PHP
+    ├─ package.json         # Dependencias JS (Vite, Tailwind…)
+    └─ README.md            # Documentación principal
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Base de datos
 
-## License
+El modelo relacional principal incluye:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    Usuarios: id, nombre, email (UNIQUE), password, rol, config_nutricional, timestamps
+
+    Glucosa: id, usuario_id (FK), fecha, hora, momento, nivel_glucosa, timestamps
+
+    Registro_Comidas: id, usuario_id (FK), fecha, momento, notas, timestamps
+
+    Registro_Comida_Alimento (pivote): registro_id (FK), alimento_id (FK), cantidad (g)
+
+    Alimentos: id, nombre (UNIQUE), carbohidratos, proteínas, grasas, calorías, timestamps
+
+    Recomendaciones: id, titulo, descripcion, timestamps
+
+    Tips: id, usuario_id (FK), recomendacion_id (FK), leido, timestamps
+
+    Estadísticas: id, usuario_id (FK), tipo, valor, periodo, created_at
+
+## Tecnologías
+
+    Frontend: HTML5, CSS3, Bootstrap 5.3.0, Chart.js
+
+    Backend: PHP 8, Laravel 9, JetStream
+
+    Base de datos: MySQL
+
+## Autor
+
+    Marta Ruiz Pérez
+
+    Email: martarp83@gmail.com  
+
+    GitHub: MartaRuiz83
+
+
+
+
