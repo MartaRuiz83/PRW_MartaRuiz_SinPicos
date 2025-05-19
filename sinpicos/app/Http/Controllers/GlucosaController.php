@@ -57,19 +57,28 @@ class GlucosaController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'fecha'         => 'required|date',
             'hora'          => 'required',
             'momento'       => 'required|in:ANTES,DESPUÉS',
             'nivel_glucosa' => 'required|integer|min:0',
+        ], [
+            'fecha.required'        => 'La fecha es obligatoria.',
+            'fecha.date'            => 'La fecha no tiene un formato válido (Y-m-d).',
+            'hora.required'         => 'La hora es obligatoria.',
+            'momento.required'      => 'El momento de la medición es obligatorio.',
+            'momento.in'            => 'El momento debe ser "ANTES" o "DESPUÉS".',
+            'nivel_glucosa.required'=> 'El nivel de glucosa es obligatorio.',
+            'nivel_glucosa.integer' => 'El nivel de glucosa debe ser un número entero.',
+            'nivel_glucosa.min'     => 'El nivel de glucosa no puede ser negativo.',
         ]);
 
         Glucosa::create([
             'usuario_id'    => auth()->id(),
-            'fecha'         => $request->fecha,
-            'hora'          => $request->hora,
-            'momento'       => $request->momento,
-            'nivel_glucosa' => $request->nivel_glucosa,
+            'fecha'         => $validated['fecha'],
+            'hora'          => $validated['hora'],
+            'momento'       => $validated['momento'],
+            'nivel_glucosa' => $validated['nivel_glucosa'],
         ]);
 
         return redirect()
@@ -90,19 +99,26 @@ class GlucosaController extends Controller
      */
     public function update(Request $request, Glucosa $glucosa)
     {
-        $request->validate([
+        $validated = $request->validate([
             'fecha'         => 'required|date',
             'hora'          => 'required',
             'momento'       => 'required|in:ANTES,DESPUÉS',
             'nivel_glucosa' => 'required|integer|min:0',
+        ], [
+            'fecha.required'        => 'La fecha es obligatoria.',
+            'fecha.date'            => 'La fecha no tiene un formato válido (Y-m-d).',
+            'hora.required'         => 'La hora es obligatoria.',
+            'momento.required'      => 'El momento de la medición es obligatorio.',
+            'momento.in'            => 'El momento debe ser "ANTES" o "DESPUÉS".',
+            'nivel_glucosa.required'=> 'El nivel de glucosa es obligatorio.',
+            'nivel_glucosa.integer' => 'El nivel de glucosa debe ser un número entero.',
+            'nivel_glucosa.min'     => 'El nivel de glucosa no puede ser negativo.',
         ]);
 
-        $glucosa->update($request->only(
-            'fecha', 'hora', 'momento', 'nivel_glucosa'
-        ));
+        $glucosa->update($validated);
 
         return redirect()
-            ->route('glucosa.index', ['date' => $glucosa->fecha])
+            ->route('glucosa.index', ['date' => $validated['fecha']])
             ->with('success', 'Registro actualizado correctamente.');
     }
 

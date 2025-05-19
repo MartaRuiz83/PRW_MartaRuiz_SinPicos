@@ -21,18 +21,17 @@ class MealController extends Controller
                      ->get();
 
         $carbohydrates = 0;
-        $proteins = 0;
-        $fats = 0;
-        $calories = 0;
+        $proteins      = 0;
+        $fats          = 0;
+        $calories      = 0;
 
         foreach ($meals as $meal) {
             foreach ($meal->ingredients as $ingredient) {
                 $quantity = $ingredient->pivot->quantity;
-
                 $carbohydrates += ($ingredient->carbohydrates ?? 0) * $quantity / 100;
-                $proteins      += ($ingredient->proteins ?? 0) * $quantity / 100;
-                $fats          += ($ingredient->fats ?? 0) * $quantity / 100;
-                $calories      += ($ingredient->calories ?? 0) * $quantity / 100;
+                $proteins      += ($ingredient->proteins      ?? 0) * $quantity / 100;
+                $fats          += ($ingredient->fats          ?? 0) * $quantity / 100;
+                $calories      += ($ingredient->calories      ?? 0) * $quantity / 100;
             }
         }
 
@@ -47,7 +46,15 @@ class MealController extends Controller
                     ->where('user_id', auth()->id())
                     ->get();
 
-        return view('home', compact('meals', 'carbohydrates', 'proteins', 'fats', 'calories', 'dates', 'tips'));
+        return view('home', compact(
+            'meals',
+            'carbohydrates',
+            'proteins',
+            'fats',
+            'calories',
+            'dates',
+            'tips'
+        ));
     }
 
     /**
@@ -72,6 +79,21 @@ class MealController extends Controller
             'ingredients'            => 'required|array|min:1',
             'ingredients.*.id'       => 'required|exists:ingredients,id',
             'ingredients.*.quantity' => 'required|numeric|min:0.1',
+        ], [
+            'date.required'                   => 'La fecha es obligatoria.',
+            'date.date'                       => 'El formato de fecha debe ser YYYY-MM-DD.',
+            'time.required'                   => 'La hora es obligatoria.',
+            'meal_type.required'              => 'El tipo de comida es obligatorio.',
+            'meal_type.string'                => 'El tipo de comida debe ser texto.',
+            'description.string'              => 'La descripción debe ser texto.',
+            'ingredients.required'            => 'Debes seleccionar al menos un ingrediente.',
+            'ingredients.array'               => 'Los ingredientes deben enviarse como un arreglo.',
+            'ingredients.min'                 => 'Debes seleccionar al menos :min ingrediente.',
+            'ingredients.*.id.required'       => 'El ID del ingrediente es obligatorio.',
+            'ingredients.*.id.exists'         => 'El ingrediente seleccionado no es válido.',
+            'ingredients.*.quantity.required' => 'La cantidad es obligatoria para cada ingrediente.',
+            'ingredients.*.quantity.numeric'  => 'La cantidad debe ser un número.',
+            'ingredients.*.quantity.min'      => 'La cantidad mínima para un ingrediente es :min.',
         ]);
 
         $meal = Meal::create([
@@ -88,8 +110,9 @@ class MealController extends Controller
         }
         $meal->ingredients()->sync($pivot);
 
-        return redirect()->route('home')
-                         ->with('success', 'Comida registrada correctamente');
+        return redirect()
+            ->route('home')
+            ->with('success', 'Comida registrada correctamente.');
     }
 
     /**
@@ -114,7 +137,7 @@ class MealController extends Controller
     /**
      * 6) Actualiza la comida en BD (admin.meals.update).
      */
-   public function update(Request $request, Meal $meal)
+    public function update(Request $request, Meal $meal)
     {
         $data = $request->validate([
             'date'                   => 'required|date',
@@ -124,6 +147,21 @@ class MealController extends Controller
             'ingredients'            => 'required|array|min:1',
             'ingredients.*.id'       => 'required|exists:ingredients,id',
             'ingredients.*.quantity' => 'required|numeric|min:0.1',
+        ], [
+            'date.required'                   => 'La fecha es obligatoria.',
+            'date.date'                       => 'El formato de fecha debe ser YYYY-MM-DD.',
+            'time.required'                   => 'La hora es obligatoria.',
+            'meal_type.required'              => 'El tipo de comida es obligatorio.',
+            'meal_type.string'                => 'El tipo de comida debe ser texto.',
+            'description.string'              => 'La descripción debe ser texto.',
+            'ingredients.required'            => 'Debes seleccionar al menos un ingrediente.',
+            'ingredients.array'               => 'Los ingredientes deben enviarse como un arreglo.',
+            'ingredients.min'                 => 'Debes seleccionar al menos :min ingrediente.',
+            'ingredients.*.id.required'       => 'El ID del ingrediente es obligatorio.',
+            'ingredients.*.id.exists'         => 'El ingrediente seleccionado no es válido.',
+            'ingredients.*.quantity.required' => 'La cantidad es obligatoria para cada ingrediente.',
+            'ingredients.*.quantity.numeric'  => 'La cantidad debe ser un número.',
+            'ingredients.*.quantity.min'      => 'La cantidad mínima para un ingrediente es :min.',
         ]);
 
         $meal->update([
@@ -151,28 +189,26 @@ class MealController extends Controller
             ->route('admin.meals.index')
             ->with('success', 'Comida actualizada correctamente.');
     }
+
     /**
      * 7) Elimina la comida (admin.meals.destroy).
      */
-   // app/Http/Controllers/MealController.php
+    public function destroy(Request $request, Meal $meal)
+    {
+        // Desvincula ingredientes y borra
+        $meal->ingredients()->detach();
+        $meal->delete();
 
-public function destroy(Request $request, Meal $meal)
-{
-    // Desvincula ingredientes y borra
-    $meal->ingredients()->detach();
-    $meal->delete();
+        // Si venimos de la vista /home, recibiremos un hidden 'date'
+        if ($request->filled('date')) {
+            return redirect()
+                ->route('home', ['date' => $request->input('date')])
+                ->with('success', 'Comida eliminada correctamente.');
+        }
 
-    // Si venimos de la vista /home, recibiremos un hidden 'date'
-    if ($request->filled('date')) {
+        // Si no, redirige al listado de admin
         return redirect()
-            ->route('home', ['date' => $request->input('date')])
+            ->route('admin.meals.index')
             ->with('success', 'Comida eliminada correctamente.');
     }
-
-    // Si no, redirige al listado de admin
-    return redirect()
-        ->route('admin.meals.index')
-        ->with('success', 'Comida eliminada correctamente.');
-}
-
 }

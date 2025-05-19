@@ -19,10 +19,7 @@ class UserController extends Controller
     // 1. Mostrar listado de usuarios (para DataTables cliente)
     public function index()
     {
-        // Traemos todos los usuarios para que DataTables haga
-        // paginación, búsqueda y orden en el cliente.
         $users = User::orderBy('id', 'asc')->get();
-
         return view('admin.users.index', compact('users'));
     }
 
@@ -41,10 +38,20 @@ class UserController extends Controller
             'password'       => 'required|string|confirmed|min:8',
             'rol'            => 'required|string',
             'tipo_diabetes'  => 'required|string',
+        ], [
+            'name.required'           => 'El nombre es obligatorio.',
+            'name.max'                => 'El nombre no puede exceder los :max caracteres.',
+            'email.required'          => 'El correo electrónico es obligatorio.',
+            'email.email'             => 'Debes introducir un correo válido.',
+            'email.unique'            => 'Ese correo ya está registrado.',
+            'password.required'       => 'La contraseña es obligatoria.',
+            'password.min'            => 'La contraseña debe tener al menos :min caracteres.',
+            'password.confirmed'      => 'Las contraseñas no coinciden.',
+            'rol.required'            => 'Debes asignar un rol al usuario.',
+            'tipo_diabetes.required'  => 'Debes indicar el tipo de diabetes.',
         ]);
 
         $data['password'] = Hash::make($data['password']);
-
         User::create($data);
 
         return redirect()
@@ -73,6 +80,16 @@ class UserController extends Controller
             'password'       => 'nullable|string|confirmed|min:8',
             'rol'            => 'required|string',
             'tipo_diabetes'  => 'required|string',
+        ], [
+            'name.required'           => 'El nombre es obligatorio.',
+            'name.max'                => 'El nombre no puede exceder los :max caracteres.',
+            'email.required'          => 'El correo es obligatorio.',
+            'email.email'             => 'Introduce un correo válido.',
+            'email.unique'            => 'Ese correo ya está en uso.',
+            'password.min'            => 'La contraseña debe tener al menos :min caracteres.',
+            'password.confirmed'      => 'Las contraseñas no coinciden.',
+            'rol.required'            => 'Selecciona un rol.',
+            'tipo_diabetes.required'  => 'Selecciona el tipo de diabetes.',
         ]);
 
         if (! empty($data['password'])) {

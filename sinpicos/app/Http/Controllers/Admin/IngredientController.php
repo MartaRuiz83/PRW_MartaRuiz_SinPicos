@@ -12,8 +12,9 @@ class IngredientController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-       $this->middleware(ControlAdmin::class); // Middleware para verificar rol
+        $this->middleware(ControlAdmin::class); // Middleware para verificar rol
     }
+
     /**
      * Mostrar listado de ingredientes (para DataTables cliente).
      */
@@ -44,6 +45,22 @@ class IngredientController extends Controller
             'proteins'      => ['nullable', 'numeric', 'min:0'],
             'fats'          => ['nullable', 'numeric', 'min:0'],
             'calories'      => ['nullable', 'integer', 'min:0'],
+        ], [
+            'name.required'           => 'El nombre del ingrediente es obligatorio.',
+            'name.string'             => 'El nombre debe ser texto.',
+            'name.max'                => 'El nombre no puede exceder los :max caracteres.',
+
+            'carbohydrates.numeric'   => 'Los carbohidratos deben ser un número.',
+            'carbohydrates.min'       => 'Los carbohidratos no pueden ser negativos.',
+
+            'proteins.numeric'        => 'Las proteínas deben ser un número.',
+            'proteins.min'            => 'Las proteínas no pueden ser negativas.',
+
+            'fats.numeric'            => 'Las grasas deben ser un número.',
+            'fats.min'                => 'Las grasas no pueden ser negativas.',
+
+            'calories.integer'        => 'Las calorías deben ser un número entero.',
+            'calories.min'            => 'Las calorías no pueden ser negativas.',
         ]);
 
         Ingredient::create($data);
@@ -80,6 +97,22 @@ class IngredientController extends Controller
             'proteins'      => ['nullable', 'numeric', 'min:0'],
             'fats'          => ['nullable', 'numeric', 'min:0'],
             'calories'      => ['nullable', 'integer', 'min:0'],
+        ], [
+            'name.required'           => 'El nombre del ingrediente es obligatorio.',
+            'name.string'             => 'El nombre debe ser texto.',
+            'name.max'                => 'El nombre no puede exceder los :max caracteres.',
+
+            'carbohydrates.numeric'   => 'Los carbohidratos deben ser un número.',
+            'carbohydrates.min'       => 'Los carbohidratos no pueden ser negativos.',
+
+            'proteins.numeric'        => 'Las proteínas deben ser un número.',
+            'proteins.min'            => 'Las proteínas no pueden ser negativas.',
+
+            'fats.numeric'            => 'Las grasas deben ser un número.',
+            'fats.min'                => 'Las grasas no pueden ser negativas.',
+
+            'calories.integer'        => 'Las calorías deben ser un número entero.',
+            'calories.min'            => 'Las calorías no pueden ser negativas.',
         ]);
 
         $ingredient->update($data);

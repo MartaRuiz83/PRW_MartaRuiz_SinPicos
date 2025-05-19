@@ -18,18 +18,13 @@ class RecomendationController extends Controller
     /**
      * Mostrar listado de recomendaciones, paginadas.
      */
-   // app/Http/Controllers/Admin/RecomendationController.php
+    public function index()
+    {
+        // Traemos todos para que DataTables procese en el cliente
+        $recs = Recomendation::orderBy('id', 'asc')->get();
 
-public function index()
-{
-    // Antes: paginate(10)
-    // $recs = Recomendation::orderBy('id', 'asc')->paginate(10);
-
-    // Ahora: traemos TODOS para que DataTables los procese en el cliente
-    $recs = Recomendation::orderBy('id', 'asc')->get();
-
-    return view('admin.recomendations.index', compact('recs'));
-}
+        return view('admin.recomendations.index', compact('recs'));
+    }
 
     /**
      * Mostrar formulario de creación.
@@ -47,6 +42,12 @@ public function index()
         $validated = $request->validate([
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'required|string',
+        ], [
+            'titulo.required'      => 'El título es obligatorio.',
+            'titulo.string'        => 'El título debe ser texto.',
+            'titulo.max'           => 'El título no puede exceder los :max caracteres.',
+            'descripcion.required' => 'La descripción es obligatoria.',
+            'descripcion.string'   => 'La descripción debe ser texto.',
         ]);
 
         Recomendation::create($validated);
@@ -80,6 +81,12 @@ public function index()
         $validated = $request->validate([
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'required|string',
+        ], [
+            'titulo.required'      => 'El título es obligatorio.',
+            'titulo.string'        => 'El título debe ser texto.',
+            'titulo.max'           => 'El título no puede exceder los :max caracteres.',
+            'descripcion.required' => 'La descripción es obligatoria.',
+            'descripcion.string'   => 'La descripción debe ser texto.',
         ]);
 
         $recomendation->update($validated);
