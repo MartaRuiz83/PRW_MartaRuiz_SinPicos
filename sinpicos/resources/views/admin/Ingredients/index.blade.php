@@ -3,8 +3,8 @@
 
 @section('title', 'Ingredientes')
 
-{{-- DataTables CSS --}}
 @section('css')
+  {{-- DataTables CSS --}}
   <link 
     rel="stylesheet" 
     href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
@@ -28,12 +28,6 @@
 @stop
 
 @section('content')
-    @if(session('success'))
-        <x-adminlte-alert theme="success" title="¡Éxito!">
-            {{ session('success') }}
-        </x-adminlte-alert>
-    @endif
-
     <div class="card">
         <div class="card-body table-responsive p-0">
             <table id="ingredients-table" class="table table-striped table-hover table-bordered mb-0">
@@ -67,11 +61,12 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form action="{{ route('admin.ingredients.destroy', $ingredient) }}"
-                                  method="POST" class="d-inline"
-                                  onsubmit="return confirm('¿Eliminar ingrediente?');">
+                                  method="POST"
+                                  class="d-inline delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-danger p-0 border-0 bg-transparent"
+                                <button type="submit"
+                                        class="text-danger p-0 border-0 bg-transparent"
                                         title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
@@ -85,12 +80,18 @@
     </div>
 @stop
 
-{{-- DataTables & initialization --}}
 @section('js')
+  {{-- jQuery --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {{-- DataTables JS --}}
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  {{-- SweetAlert2 --}}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     $(document).ready(function() {
+      // Inicializar DataTable
       $('#ingredients-table').DataTable({
         paging:       true,
         searching:    true,
@@ -104,6 +105,36 @@
         columnDefs: [
           { orderable: false, targets: -1 } // Desactiva orden en columna Acciones
         ]
+      });
+
+      // Mostrar SweetAlert si hay mensaje de éxito en sesión
+      @if(session('success'))
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: @json(session('success')),
+          confirmButtonText: 'Aceptar'
+        });
+      @endif
+
+      // Confirmación de eliminación con SweetAlert2
+      $('.delete-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        Swal.fire({
+          title: '¿Eliminar este ingrediente?',
+          text: "¡Esta acción no se puede deshacer!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
       });
     });
   </script>

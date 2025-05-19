@@ -20,6 +20,9 @@
   <link href="{{ asset('css/style.css') }}" rel="stylesheet">
   {{-- ECharts --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+  <!-- SweetAlert2 por CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <style>
     /* Logo Pacifico */

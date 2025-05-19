@@ -92,7 +92,7 @@
       <div class="row">
         {{-- Hipoglucemia --}}
         <div class="col-md-6 mb-4">
-          <h5 class="text-danger"><i class="ri-heart-pulse-fill me-1"></i> ¿Hipoglucemia? (&lt; 70 mg/dL)</h5>
+          <h5 class="text-danger"><i class="ri-heart-pulse-fill me-1"></i> ¿Hipoglucemia? (< 70 mg/dL)</h5>
           <ul class="ps-3 mb-0">
             <li>Ingiere 15 g de carbohidratos de rápida absorción (glucosa, zumo).</li>
             <li>Espera 15 min y vuelve a medir.</li>
@@ -101,7 +101,7 @@
         </div>
         {{-- Hiperglucemia --}}
         <div class="col-md-6 mb-4">
-          <h5 class="text-danger"><i class="ri-flashlight-fill me-1"></i> ¿Hiperglucemia? (&gt; 180 mg/dL)</h5>
+          <h5 class="text-danger"><i class="ri-flashlight-fill me-1"></i> ¿Hiperglucemia? (> 180 mg/dL)</h5>
           <ul class="ps-3 mb-0">
             <li>Realiza ejercicio ligero (paseo 10–15 min).</li>
             <li>Hidrátate con agua sin azúcar.</li>
@@ -135,8 +135,7 @@
           <tbody>
             @forelse($glucosas as $g)
               @php
-                // Comprobamos rango normal/hipoglucemia
-                if($g->momento==='ANTES') {
+                if ($g->momento === 'ANTES') {
                   $normal = $g->nivel_glucosa >= $preMin && $g->nivel_glucosa <= $preMax;
                 } else {
                   $normal = $g->nivel_glucosa < $postMax;
@@ -152,9 +151,8 @@
                     <i class="ri-apple-fill text-danger me-1"></i><small class="text-muted">Antes</small>
                   @else
                     <i class="ri-apple-line text-danger me-1"></i><small class="text-muted">Después</small>
-                   @endif
+                  @endif
                 </td>
-
                 <td class="{{ $color }} fw-bold">
                   {{ $g->nivel_glucosa }} mg/dL
                 </td>
@@ -162,8 +160,8 @@
                   <a href="{{ route('glucosa.edit', $g) }}" class="btn btn-sm btn-outline-warning">
                     <i class="ri-edit-2-fill"></i>
                   </a>
-                  <form action="{{ route('glucosa.destroy', $g) }}" method="POST" class="d-inline"
-                        onsubmit="return confirm('¿Eliminar este registro?');">
+                  <form action="{{ route('glucosa.destroy', $g) }}" method="POST"
+                        class="d-inline delete-form">
                     @csrf @method('DELETE')
                     <button class="btn btn-sm btn-outline-danger">
                       <i class="ri-delete-bin-5-fill"></i>
@@ -188,37 +186,73 @@
 @endsection
 
 @push('scripts')
-<script>
-  // Preparar datos para ECharts
-  const data = @json(
-    $glucosas->map(fn($g)=>[
-      'label'=> $g->hora,
-      'value'=> $g->nivel_glucosa,
-    ])
-  );
+  <!-- 1) Incluir SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  const chartDom = document.getElementById('glucose-chart');
-  const myChart  = echarts.init(chartDom);
-  const option   = {
-    color: ['#b91c1c'],
-    tooltip: { trigger: 'axis' },
-    xAxis: {
-      type: 'category',
-      data: data.map(d=>d.label),
-      axisLabel: { color: '#555' }
-    },
-    yAxis: {
-      type: 'value',
-      name: 'mg/dL',
-      axisLabel: { color: '#555' }
-    },
-    series: [{
-      data: data.map(d=>d.value),
-      type: 'line',
-      smooth: true,
-      areaStyle: { color: 'rgba(185,28,28,0.2)' }
-    }]
-  };
-  myChart.setOption(option);
-</script>
+  <!-- 2) Tus scripts de ECharts -->
+  <script>
+    // Preparar datos para ECharts
+    const data = @json(
+      $glucosas->map(fn($g)=>[
+        'label'=> $g->hora,
+        'value'=> $g->nivel_glucosa,
+      ])
+    );
+
+    const chartDom = document.getElementById('glucose-chart');
+    const myChart  = echarts.init(chartDom);
+    const option   = {
+      color: ['#b91c1c'],
+      tooltip: { trigger: 'axis' },
+      xAxis: {
+        type: 'category',
+        data: data.map(d=>d.label),
+        axisLabel: { color: '#555' }
+      },
+      yAxis: {
+        type: 'value',
+        name: 'mg/dL',
+        axisLabel: { color: '#555' }
+      },
+      series: [{
+        data: data.map(d=>d.value),
+        type: 'line',
+        smooth: true,
+        areaStyle: { color: 'rgba(185,28,28,0.2)' }
+      }]
+    };
+    myChart.setOption(option);
+  </script>
+
+  <!-- 3) SweetAlert2 para éxito y confirmación de borrado -->
+  <script>
+    // Mostrar alerta de éxito si viene en sesión
+    @if(session('success'))
+      Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: @json(session('success')),
+        confirmButtonText: 'Aceptar'
+      });
+    @endif
+
+    // Interceptar formularios de borrado
+    document.querySelectorAll('.delete-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          title: '¿Eliminar este registro?',
+          text: "¡Esta acción no se puede deshacer!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      });
+    });
+  </script>
 @endpush

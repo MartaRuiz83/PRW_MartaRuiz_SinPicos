@@ -9,10 +9,9 @@
     border-color: #7d3ced;
   }
   .btn-primary:hover {
-  background-color: #5a1fa6; /* Púrpura oscuro */
-  border-color: #5a1fa6;
-}
-
+    background-color: #5a1fa6; /* Púrpura oscuro */
+    border-color: #5a1fa6;
+  }
 </style>
 
 <div class="container py-4">
@@ -53,9 +52,13 @@
               </div>
               <p class="small text-muted mb-0">{{ $tip->recomendation->descripcion }}</p>
             </div>
-            <form action="{{ route('admin.tips.showed', $tip) }}" method="POST" class="mt-3 text-end">
+            <form action="{{ route('admin.tips.showed', $tip) }}"
+                  method="POST"
+                  class="mt-3 text-end mark-seen-form">
               @csrf
-              <button type="submit" class="btn btn-sm btn-outline-success">Marcar como visto</button>
+              <button type="submit" class="btn btn-sm btn-outline-success">
+                Marcar como visto
+              </button>
             </form>
           </div>
         </div>
@@ -91,16 +94,16 @@
           @switch($label)
             @case('carbohydrates')
               <h5 class="card-title">Carbohidratos</h5>
-            @break
+              @break
             @case('proteins')
               <h5 class="card-title">Proteínas</h5>
-            @break
+              @break
             @case('fats')
               <h5 class="card-title">Grasas</h5>
-            @break
+              @break
             @case('calories')
               <h5 class="card-title">Calorías</h5>
-            @break
+              @break
           @endswitch
 
           <h2 class="fw-bold {{ getColorClass($$label, $r['min'], $r['max']) }}">
@@ -117,18 +120,15 @@
 </div>
 
 {{-- Leyenda ultra-compacta --}}
-{{-- Leyenda ultra-compacta reducida --}}
 <div class="d-flex justify-content-center gap-2 mb-3 small" style="font-size: .75rem;">
   <div class="d-flex align-items-center">
     <i class="ri-checkbox-blank-circle-fill text-success me-1" style="font-size: .75rem;"></i>
     <span>Verde: Aún tienes margen en el consumo</span>
   </div>
-
   <div class="d-flex align-items-center">
     <i class="ri-checkbox-blank-circle-fill text-orange me-1" style="font-size: .75rem;"></i>
     <span>Naranja: Precaución, mantente dentro del rango</span>
   </div>
-
   <div class="d-flex align-items-center">
     <i class="ri-checkbox-blank-circle-fill text-danger me-1" style="font-size: .75rem;"></i>
     <span>Rojo: Te has excedido en el consumo</span>
@@ -151,7 +151,7 @@
     </a>
   </div>
 
-  @forelse($order as $type)
+  @foreach($order as $type)
     @if(isset($grouped[$type]) && $grouped[$type]->isNotEmpty())
       @php
         // Calculamos calorías totales para el grupo
@@ -217,7 +217,7 @@
                 </a>
                 <form action="{{ route('admin.meals.destroy', $meal) }}"
                       method="POST"
-                      onsubmit="return confirm('¿Eliminar esta comida?');">
+                      class="delete-form">
                   @csrf @method('DELETE')
                   <input type="hidden" name="date" value="{{ $dates['today']->format('Y-m-d') }}">
                   <button type="submit" class="btn btn-link text-danger p-0" title="Eliminar">
@@ -230,28 +230,79 @@
         @endforeach
       </div>
     @endif
-  @empty
-    <p class="text-muted">No hay comidas registradas.</p>
-  @endforelse
+  @endforeach
+
 </div>
 
 @endsection
 
 @push('scripts')
-<script>
-  const chart = echarts.init(document.getElementById('macronutrientesChart'));
-  chart.setOption({
-    color: ['#BFA2E0', '#FF97B1', '#5CD6D5'],
-    series:[{
-      type:'pie',
-      radius:['40%','70%'],
-      label:{ formatter:'{b}: {c} g' },
-      data:[
-        { value: {{$carbohydrates}}, name:'Carbohidratos' },
-        { value: {{$proteins}},      name:'Proteínas' },
-        { value: {{$fats}},          name:'Grasas' }
-      ]
-    }]
-  });
-</script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    // Mostrar alerta de éxito si existe
+    @if(session('success'))
+      Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: @json(session('success')),
+        confirmButtonText: 'Aceptar'
+      });
+    @endif
+
+    // Confirmación para eliminación de comidas
+    document.querySelectorAll('.delete-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          title: '¿Eliminar esta comida?',
+          text: "¡Esta acción no se puede deshacer!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        }).then(result => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      });
+    });
+
+    // Confirmación para marcar consejos como vistos
+    document.querySelectorAll('.mark-seen-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          icon: 'info',
+          title: 'Consejo marcado',
+          text: 'Has marcado este consejo como visto.',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          form.submit();
+        });
+      });
+    });
+  </script>
+
+  <!-- ECharts: Macronutrientes -->
+  <script>
+    const chart = echarts.init(document.getElementById('macronutrientesChart'));
+    chart.setOption({
+      color: ['#BFA2E0', '#FF97B1', '#5CD6D5'],
+      series:[{
+        type:'pie',
+        radius:['40%','70%'],
+        label:{ formatter:'{b}: {c} g' },
+        data:[
+          { value: {{$carbohydrates}}, name:'Carbohidratos' },
+          { value: {{$proteins}},      name:'Proteínas' },
+          { value: {{$fats}},          name:'Grasas' }
+        ]
+      }]
+    });
+  </script>
 @endpush

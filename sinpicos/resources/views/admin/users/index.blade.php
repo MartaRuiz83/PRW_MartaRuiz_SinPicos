@@ -3,8 +3,8 @@
 
 @section('title', 'Usuarios')
 
-{{-- DataTables CSS --}}
 @section('css')
+  {{-- DataTables CSS --}}
   <link 
     rel="stylesheet" 
     href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
@@ -27,12 +27,6 @@
 @stop
 
 @section('content')
-    @if(session('success'))
-        <x-adminlte-alert theme="success" title="¡Éxito!">
-            {{ session('success') }}
-        </x-adminlte-alert>
-    @endif
-
     <div class="card">
       <div class="card-body table-responsive p-0">
         <table id="users-table" class="table table-striped table-hover table-bordered mb-0">
@@ -55,14 +49,19 @@
               <td>{{ ucfirst($user->rol) }}</td>
               <td>{{ ucfirst($user->tipo_diabetes) }}</td>
               <td class="text-center">
-                <a href="{{ route('admin.users.show', $user) }}" class="text-info me-2" title="Ver usuario">
+                <a href="{{ route('admin.users.show', $user) }}"
+                   class="text-info me-2"
+                   title="Ver usuario">
                   <i class="fas fa-eye"></i>
                 </a>
-                <a href="{{ route('admin.users.edit', $user) }}" class="text-warning me-2" title="Editar usuario">
+                <a href="{{ route('admin.users.edit', $user) }}"
+                   class="text-warning me-2"
+                   title="Editar usuario">
                   <i class="fas fa-edit"></i>
                 </a>
                 <form action="{{ route('admin.users.destroy', $user) }}"
-                      method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar usuario?');">
+                      method="POST"
+                      class="d-inline delete-form">
                   @csrf
                   @method('DELETE')
                   <button type="submit"
@@ -80,13 +79,18 @@
     </div>
 @stop
 
-{{-- DataTables JS + Inicialización --}}
 @section('js')
+  {{-- jQuery y DataTables --}}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+  {{-- SweetAlert2 --}}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     $(document).ready(function() {
+      // Inicializar DataTables
       $('#users-table').DataTable({
         paging:       true,
         searching:    true,
@@ -98,8 +102,38 @@
           url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
         },
         columnDefs: [
-          { orderable: false, targets: -1 } // desactivar orden en columna Acciones
+          { orderable: false, targets: -1 } // desactivar orden en Acciones
         ]
+      });
+
+      // Mostrar SweetAlert al hacer redirect con session('success')
+      @if(session('success'))
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: @json(session('success')),
+          confirmButtonText: 'Aceptar'
+        });
+      @endif
+
+      // Confirmación de borrado con SweetAlert
+      $('.delete-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        Swal.fire({
+          title: '¿Eliminar este usuario?',
+          text: "¡Esta acción no se puede deshacer!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
       });
     });
   </script>
