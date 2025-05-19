@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Ingredient;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Middleware\ControlAdmin;
 
 class IngredientController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('controladmin'); // Middleware para verificar rol
+       $this->middleware(ControlAdmin::class); // Middleware para verificar rol
     }
     /**
      * Mostrar listado de ingredientes (para DataTables cliente).
