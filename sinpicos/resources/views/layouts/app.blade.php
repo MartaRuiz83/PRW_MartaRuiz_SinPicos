@@ -28,8 +28,9 @@
     .navbar .logo-text { font-family:'Pacifico',cursive; font-size:1.5rem; color:#7c3aed; }
     .navbar .logo-img  { height:40px; width:auto; }
     .navbar { box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:.5rem 0; }
-    .navbar .menu a { margin-right:1rem; color:#333; font-weight:500; }
+    .navbar .menu a { margin-right:1rem; color:#333; font-weight:500; text-decoration:none; }
     .navbar .menu a:hover { color:#7c3aed; }
+    .navbar .menu a.active { color:#7c3aed !important; }
     .login-link {
       color:#7c3aed; font-weight:600; text-decoration:none;
       display:inline-flex; align-items:center; gap:.25rem;
@@ -47,11 +48,22 @@
     /* Botón Admin con hover lila */
     .admin-hover {
       border: 1px solid #7c3aed !important;
+      color: #333;
+      display: inline-flex;
+      align-items: center;
     }
     .admin-hover:hover {
       background-color: #7c3aed !important;
       color: #fff !important;
       border-color: #7c3aed !important;
+    }
+    .admin-hover.active {
+      background-color: transparent;
+      color: #7c3aed !important;
+      border-color: #7c3aed !important;
+    }
+    .admin-hover.active i {
+      color: #7c3aed !important;
     }
   </style>
 </head>
@@ -71,32 +83,27 @@
         <div class="menu d-none d-md-flex align-items-center">
           @if(auth()->user()->rol == 'Administrador')
             <a href="{{ route('admin.dashboard') }}"
-               class="btn btn-sm admin-hover ms-3 d-flex align-items-center">
-              {{-- Icono móvil (solo en <768px) --}}
+               class="btn btn-sm admin-hover ms-3 {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
               <i class="ri-shield-check-line d-inline d-md-none fs-5"></i>
-              {{-- Icono escritorio --}}
               <i class="ri-shield-line d-none d-md-inline me-1 fs-5"></i>
               <span class="d-none d-md-inline">Admin</span>
             </a>
           @endif
-          <a href="{{ route('home') }}" class="menu-link ms-3">
-            <i class="ri-home-line d-inline d-md-none fs-5"></i>
-            <span class="d-none d-md-inline">Inicio</span>
+          <a href="{{ route('home') }}"
+             class="menu-link ms-3 {{ request()->routeIs('home') ? 'active' : '' }}">
+            Inicio
           </a>
-
-          <a href="{{ route('glucosa.index') }}" class="menu-link ms-3">
-            <i class="ri-heart-pulse-line d-inline d-md-none fs-5"></i>
-            <span class="d-none d-md-inline">Control Glucosa</span>
+          <a href="{{ route('glucosa.index') }}"
+             class="menu-link ms-3 {{ request()->routeIs('glucosa.index') ? 'active' : '' }}">
+            Control Glucosa
           </a>
-
-          <a href="{{ route('statistics') }}" class="menu-link ms-3">
-            <i class="ri-bar-chart-line d-inline d-md-none fs-5"></i>
-            <span class="d-none d-md-inline">Estadísticas</span>
+          <a href="{{ route('statistics') }}"
+             class="menu-link ms-3 {{ request()->routeIs('statistics') ? 'active' : '' }}">
+            Estadísticas
           </a>
-
-          <a href="{{ route('recomendaciones') }}" class="menu-link ms-3">
-            <i class="ri-lightbulb-line d-inline d-md-none fs-5"></i>
-            <span class="d-none d-md-inline">Recomendaciones</span>
+          <a href="{{ route('recomendaciones') }}"
+             class="menu-link ms-3 {{ request()->routeIs('recomendaciones') ? 'active' : '' }}">
+            Recomendaciones
           </a>
         </div>
       @endif
@@ -127,7 +134,7 @@
           </a>
         @endauth
 
-        {{-- DESPLEGABLE MÓVIL --}}
+        {{-- Menú desplegable móvil --}}
         @auth
           <div class="dropdown d-md-none ms-3">
             <button class="btn p-0" id="mobileMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
@@ -135,12 +142,27 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileMenuBtn">
               @if(auth()->user()->rol == 'Administrador')
-                <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin</a></li>
+                <li><a class="dropdown-item {{ request()->routeIs('admin.dashboard') ? 'active text-purple' : '' }}"
+                       href="{{ route('admin.dashboard') }}">
+                  <i class="ri-shield-line me-1"></i> Admin
+                </a></li>
               @endif
-              <li><a class="dropdown-item" href="{{ route('home') }}">Inicio</a></li>
-              <li><a class="dropdown-item" href="{{ route('glucosa.index') }}">Control Glucosa</a></li>
-              <li><a class="dropdown-item" href="{{ route('statistics') }}">Estadísticas</a></li>
-              <li><a class="dropdown-item" href="{{ route('recomendaciones') }}">Recomendaciones</a></li>
+              <li><a class="dropdown-item {{ request()->routeIs('home') ? 'active text-purple' : '' }}"
+                     href="{{ route('home') }}">
+                <i class="ri-home-line me-1"></i> Inicio
+              </a></li>
+              <li><a class="dropdown-item {{ request()->routeIs('glucosa.index') ? 'active text-purple' : '' }}"
+                     href="{{ route('glucosa.index') }}">
+                <i class="ri-heart-pulse-line me-1"></i> Control Glucosa
+              </a></li>
+              <li><a class="dropdown-item {{ request()->routeIs('statistics') ? 'active text-purple' : '' }}"
+                     href="{{ route('statistics') }}">
+                <i class="ri-bar-chart-line me-1"></i> Estadísticas
+              </a></li>
+              <li><a class="dropdown-item {{ request()->routeIs('recomendaciones') ? 'active text-purple' : '' }}"
+                     href="{{ route('recomendaciones') }}">
+                <i class="ri-lightbulb-line me-1"></i> Recomendaciones
+              </a></li>
             </ul>
           </div>
         @endauth
