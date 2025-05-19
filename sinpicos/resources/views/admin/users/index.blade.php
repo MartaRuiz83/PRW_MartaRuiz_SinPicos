@@ -112,7 +112,8 @@
           icon: 'success',
           title: '¡Éxito!',
           text: @json(session('success')),
-          confirmButtonText: 'Aceptar'
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#28a745' // botón verde
         });
       @endif
 
@@ -125,10 +126,10 @@
           text: "¡Esta acción no se puede deshacer!",
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#6c757d',
           confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'Cancelar'
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#dc3545', // botón rojo
+          cancelButtonColor: '#6c757d'
         }).then((result) => {
           if (result.isConfirmed) {
             form.submit();

@@ -348,7 +348,7 @@ return [
         [
             'text' => 'Recomendaciones',
             'url' => 'admin/recomendations',
-            'icon' => 'fas fa-fw fa-book', 
+            'icon' => 'fas fa-fw fa-lightbulb', 
             'active' => ['admin/recomendations*'],
         ],
         [

@@ -12,10 +12,17 @@
 @stop
 
 @section('content_header')
-  <div class="d-flex justify-content-between align-items-center">
+  <div class="d-flex justify-content-between align-items-center mb-3">
       <h1 class="h3">Recomendaciones</h1>
-      <a href="{{ route('admin.recomendations.create') }}" class="btn btn-success">
-          <i class="fas fa-plus"></i> Crear nueva
+      <a href="{{ route('admin.recomendations.create') }}"
+         class="btn"
+         style="background-color: #559ae4; color: #fff; border: none;
+                width: 40px; height: 40px; display: flex;
+                align-items: center; justify-content: center;
+                border-radius: 4px;"
+         title="Crear nueva recomendación">
+          <i class="fas fa-lightbulb me-1"></i>
+          <i class="fas fa-plus"></i>
       </a>
   </div>
 @stop
@@ -103,17 +110,18 @@
         ]
       });
 
-      // Mostrar Toast de éxito con SweetAlert2 si hay sesión
+      // Mostrar SweetAlert de éxito con botón verde
       @if(session('success'))
         Swal.fire({
           icon: 'success',
           title: '¡Éxito!',
           text: @json(session('success')),
-          confirmButtonText: 'Aceptar'
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#28a745'
         });
       @endif
 
-      // Confirmación de eliminación
+      // Confirmación de eliminación con botón rojo
       $('.delete-form').on('submit', function(e) {
         e.preventDefault();
         const form = this;
@@ -122,10 +130,10 @@
           text: "¡Esta acción no se puede deshacer!",
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#6c757d',
           confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'Cancelar'
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#dc3545',
+          cancelButtonColor: '#6c757d'
         }).then((result) => {
           if (result.isConfirmed) {
             form.submit();
