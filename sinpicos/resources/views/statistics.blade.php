@@ -154,10 +154,17 @@
       echarts.init(document.getElementById('pieMacros')).setOption({
         color: pastelPalette,
         tooltip: { trigger:'item' },
-        legend: { orient:'vertical', left:'left', data:['Carbohidratos','Proteínas','Grasas'] },
-        series:[{
-          type:'pie', radius:'60%',
-          label:{ formatter:'{b}: {d}%' },
+        legend: {
+          orient: 'horizontal',   // leyenda en fila
+          top: '0%',              // a un 5% desde el borde superior
+          left: 'center',         // centrada horizontalmente
+          data: ['Carbohidratos','Proteínas','Grasas']
+        },
+        series: [{
+          type: 'pie',
+          radius: '60%',
+          center: ['50%', '60%'], // mover el centro hacia abajo para no tapar la leyenda
+          label: { formatter:'{b}: {d}%' },
           data:[
             { value: carbs.reduce((a,b)=>a+b,0),    name:'Carbohidratos' },
             { value: proteins.reduce((a,b)=>a+b,0), name:'Proteínas' },
@@ -165,6 +172,7 @@
           ]
         }]
       });
+
 
       // 3) Bar chart calorías con naranja menos intenso
       echarts.init(document.getElementById('barCalories')).setOption({
