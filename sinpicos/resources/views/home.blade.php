@@ -14,7 +14,8 @@
   }
 </style>
 
-<div class="container py-4">
+{{-- Cabecera de navegación de días --}}
+<div class="container py-4 px-3 px-sm-4">
   <div class="card shadow-sm rounded-lg border-0">
     <div class="card-body d-flex align-items-center justify-content-between">
       <!-- Flecha al día anterior -->
@@ -38,7 +39,8 @@
   </div>
 </div>
 
-<div class="container py-4">
+{{-- Consejos del día --}}
+<div class="container py-4 px-3 px-sm-4">
   <h2 class="h5 mb-4" style="color: #7d3ced;">Consejos del día</h2>
   <div class="row g-3">
     @foreach($tips->take(3) as $tip)
@@ -85,42 +87,44 @@
   $order   = ['Desayuno','Almuerzo','Snack','Cena'];
 @endphp
 
-{{-- Resumen del Día --}}
-<div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
-  @foreach($ranges as $label => $r)
-    <div class="col">
-      <div class="card h-100">
-        <div class="card-body text-center">
-          @switch($label)
-            @case('carbohydrates')
-              <h5 class="card-title">Carbohidratos</h5>
-              @break
-            @case('proteins')
-              <h5 class="card-title">Proteínas</h5>
-              @break
-            @case('fats')
-              <h5 class="card-title">Grasas</h5>
-              @break
-            @case('calories')
-              <h5 class="card-title">Calorías</h5>
-              @break
-          @endswitch
+{{-- Resumen del Día (datos nutricionales) --}}
+<div class="container px-3 px-sm-4 mb-4">
+  <div class="row row-cols-1 row-cols-md-4 g-4">
+    @foreach($ranges as $label => $r)
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            @switch($label)
+              @case('carbohydrates')
+                <h5 class="card-title">Carbohidratos</h5>
+                @break
+              @case('proteins')
+                <h5 class="card-title">Proteínas</h5>
+                @break
+              @case('fats')
+                <h5 class="card-title">Grasas</h5>
+                @break
+              @case('calories')
+                <h5 class="card-title">Calorías</h5>
+                @break
+            @endswitch
 
-          <h2 class="fw-bold {{ getColorClass($$label, $r['min'], $r['max']) }}">
-            {{ $label==='calories' ? round($$label,1).' kcal' : $$label.' g' }}
-          </h2>
-          <p class="text-muted mb-0">
-            de {{ $r['min'] }} - {{ $r['max'] }}
-            {{ $label==='calories' ? 'kcal' : 'g' }}
-          </p>
+            <h2 class="fw-bold {{ getColorClass($$label, $r['min'], $r['max']) }}">
+              {{ $label==='calories' ? round($$label,1).' kcal' : $$label.' g' }}
+            </h2>
+            <p class="text-muted mb-0">
+              de {{ $r['min'] }} - {{ $r['max'] }}
+              {{ $label==='calories' ? 'kcal' : 'g' }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  @endforeach
+    @endforeach
+  </div>
 </div>
 
 {{-- Leyenda ultra-compacta --}}
-<div class="d-flex justify-content-center gap-2 mb-3 small" style="font-size: .75rem;">
+<div class="d-flex justify-content-center gap-2 mb-3 small px-3 px-sm-4" style="font-size: .75rem;">
   <div class="d-flex align-items-center">
     <i class="ri-checkbox-blank-circle-fill text-success me-1" style="font-size: .75rem;"></i>
     <span>Verde: Aún tienes margen en el consumo</span>
@@ -136,14 +140,16 @@
 </div>
 
 {{-- Gráfico de macronutrientes --}}
-<div class="card mb-4">
-  <div class="card-body" style="height:300px;">
-    <div id="macronutrientesChart" class="w-100 h-100"></div>
+<div class="container px-3 px-sm-4 mb-5">
+  <div class="card">
+    <div class="card-body" style="height:300px;">
+      <div id="macronutrientesChart" class="w-100 h-100"></div>
+    </div>
   </div>
 </div>
 
 {{-- Registro de Comidas agrupado por tipo --}}
-<div class="container mb-5">
+<div class="container mb-5 px-3 px-sm-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="h5 mb-0">Registro de Comidas</h2>
     <a href="{{ route('meals.create') }}" class="btn btn-primary">
