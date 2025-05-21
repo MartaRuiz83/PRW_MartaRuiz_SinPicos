@@ -69,51 +69,53 @@ class MealController extends Controller
     /**
      * 3) Procesa el envío y guarda la comida con sus ingredientes.
      */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'date'                   => 'required|date',
-            'time'                   => 'required',
-            'meal_type'              => 'required|string',
-            'description'            => 'nullable|string',
-            'ingredients'            => 'required|array|min:1',
-            'ingredients.*.id'       => 'required|exists:ingredients,id',
-            'ingredients.*.quantity' => 'required|numeric|min:0.1',
-        ], [
-            'date.required'                   => 'La fecha es obligatoria.',
-            'date.date'                       => 'El formato de fecha debe ser YYYY-MM-DD.',
-            'time.required'                   => 'La hora es obligatoria.',
-            'meal_type.required'              => 'El tipo de comida es obligatorio.',
-            'meal_type.string'                => 'El tipo de comida debe ser texto.',
-            'description.string'              => 'La descripción debe ser texto.',
-            'ingredients.required'            => 'Debes seleccionar al menos un ingrediente.',
-            'ingredients.array'               => 'Los ingredientes deben enviarse como un arreglo.',
-            'ingredients.min'                 => 'Debes seleccionar al menos :min ingrediente.',
-            'ingredients.*.id.required'       => 'El ID del ingrediente es obligatorio.',
-            'ingredients.*.id.exists'         => 'El ingrediente seleccionado no es válido.',
-            'ingredients.*.quantity.required' => 'La cantidad es obligatoria para cada ingrediente.',
-            'ingredients.*.quantity.numeric'  => 'La cantidad debe ser un número.',
-            'ingredients.*.quantity.min'      => 'La cantidad mínima para un ingrediente es :min.',
-        ]);
+   public function store(Request $request)
+{
+    $data = $request->validate([
+        'date'                   => ['required', 'date', 'before_or_equal:today'],
+        'time'                   => 'required',
+        'meal_type'              => 'required|string',
+        'description'            => 'nullable|string',
+        'ingredients'            => 'required|array|min:1',
+        'ingredients.*.id'       => 'required|exists:ingredients,id',
+        'ingredients.*.quantity' => 'required|numeric|min:0.1',
+    ], [
+        'date.required'                   => 'La fecha es obligatoria.',
+        'date.date'                       => 'El formato de fecha debe ser YYYY-MM-DD.',
+        'date.before_or_equal'           => 'No puedes registrar una comida para un día futuro.',
+        'time.required'                   => 'La hora es obligatoria.',
+        'meal_type.required'              => 'El tipo de comida es obligatorio.',
+        'meal_type.string'                => 'El tipo de comida debe ser texto.',
+        'description.string'              => 'La descripción debe ser texto.',
+        'ingredients.required'            => 'Debes seleccionar al menos un ingrediente.',
+        'ingredients.array'               => 'Los ingredientes deben enviarse como un arreglo.',
+        'ingredients.min'                 => 'Debes seleccionar al menos :min ingrediente.',
+        'ingredients.*.id.required'       => 'El ID del ingrediente es obligatorio.',
+        'ingredients.*.id.exists'         => 'El ingrediente seleccionado no es válido.',
+        'ingredients.*.quantity.required' => 'La cantidad es obligatoria para cada ingrediente.',
+        'ingredients.*.quantity.numeric'  => 'La cantidad debe ser un número.',
+        'ingredients.*.quantity.min'      => 'La cantidad mínima para un ingrediente es :min.',
+    ]);
 
-        $meal = Meal::create([
-            'date'        => $data['date'],
-            'time'        => $data['time'],
-            'meal_type'   => $data['meal_type'],
-            'description' => $data['description'],
-            'user_id'     => auth()->id(),
-        ]);
+    $meal = Meal::create([
+        'date'        => $data['date'],
+        'time'        => $data['time'],
+        'meal_type'   => $data['meal_type'],
+        'description' => $data['description'],
+        'user_id'     => auth()->id(),
+    ]);
 
-        $pivot = [];
-        foreach ($data['ingredients'] as $ing) {
-            $pivot[$ing['id']] = ['quantity' => $ing['quantity']];
-        }
-        $meal->ingredients()->sync($pivot);
-
-        return redirect()
-            ->route('home')
-            ->with('success', 'Comida registrada correctamente.');
+    $pivot = [];
+    foreach ($data['ingredients'] as $ing) {
+        $pivot[$ing['id']] = ['quantity' => $ing['quantity']];
     }
+    $meal->ingredients()->sync($pivot);
+
+    return redirect()
+        ->route('home')
+        ->with('success', 'Comida registrada correctamente.');
+}
+
 
     /**
      * 4) Muestra el detalle de una comida (admin.meals.show).

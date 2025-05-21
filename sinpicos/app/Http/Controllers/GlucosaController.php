@@ -55,22 +55,23 @@ class GlucosaController extends Controller
     /**
      * Almacenar nueva medición de glucosa.
      */
-    public function store(Request $request)
+        public function store(Request $request)
     {
         $validated = $request->validate([
-            'fecha'         => 'required|date',
+            'fecha'         => ['required', 'date', 'before_or_equal:today'],
             'hora'          => 'required',
             'momento'       => 'required|in:ANTES,DESPUÉS',
             'nivel_glucosa' => 'required|integer|min:0',
         ], [
-            'fecha.required'        => 'La fecha es obligatoria.',
-            'fecha.date'            => 'La fecha no tiene un formato válido (Y-m-d).',
-            'hora.required'         => 'La hora es obligatoria.',
-            'momento.required'      => 'El momento de la medición es obligatorio.',
-            'momento.in'            => 'El momento debe ser "ANTES" o "DESPUÉS".',
-            'nivel_glucosa.required'=> 'El nivel de glucosa es obligatorio.',
-            'nivel_glucosa.integer' => 'El nivel de glucosa debe ser un número entero.',
-            'nivel_glucosa.min'     => 'El nivel de glucosa no puede ser negativo.',
+            'fecha.required'         => 'La fecha es obligatoria.',
+            'fecha.date'             => 'La fecha no tiene un formato válido (Y-m-d).',
+            'fecha.before_or_equal' => 'No puedes registrar una medición para un día futuro.',
+            'hora.required'          => 'La hora es obligatoria.',
+            'momento.required'       => 'El momento de la medición es obligatorio.',
+            'momento.in'             => 'El momento debe ser "ANTES" o "DESPUÉS".',
+            'nivel_glucosa.required' => 'El nivel de glucosa es obligatorio.',
+            'nivel_glucosa.integer'  => 'El nivel de glucosa debe ser un número entero.',
+            'nivel_glucosa.min'      => 'El nivel de glucosa no puede ser negativo.',
         ]);
 
         Glucosa::create([
@@ -85,6 +86,7 @@ class GlucosaController extends Controller
             ->route('glucosa.index', ['date' => now()->toDateString()])
             ->with('success', 'Medición añadida correctamente.');
     }
+
 
     /**
      * Mostrar formulario de edición.
