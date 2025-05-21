@@ -110,29 +110,84 @@
 
       {{-- Usuario / Entrar + menú desplegable móvil al final --}}
       <div class="d-flex align-items-center">
-        @auth
-          <div class="dropdown">
-            <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
-               href="#" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-              <div class="initials">{{ strtoupper(substr(auth()->user()->name,0,2)) }}</div>
-              <span class="text-dark">{{ auth()->user()->name }}</span>
-              <i class="ri-arrow-down-s-line"
-                 style="color:#7c3aed;font-size:1.25rem;margin-left:.5rem;"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuLink">
-              <li>
-                <form method="POST" action="{{ route('logout') }}">
-                  @csrf
-                  <button class="dropdown-item" type="submit">Cerrar sesión</button>
-                </form>
-              </li>
-            </ul>
-          </div>
-        @else
-          <a href="{{ route('login') }}" class="login-link">
-            <i class="ri-user-line fs-5"></i> Entrar
+  @auth
+    {{-- Menú desplegable de usuario (escritorio) --}}
+    <div class="dropdown">
+      <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
+         href="#" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="initials">{{ strtoupper(substr(auth()->user()->name,0,2)) }}</div>
+        <span class="text-dark">{{ auth()->user()->name }}</span>
+        <i class="ri-arrow-down-s-line"
+           style="color:#7c3aed;font-size:1.25rem;margin-left:.5rem;"></i>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuLink">
+        {{-- NUEVO: Enlace a editar perfil --}}
+        <li>
+          <a class="dropdown-item" href="{{ route('perfil.edit') }}">
+            <i class="ri-user-settings-line me-1"></i> Editar perfil
           </a>
-        @endauth
+        </li>
+        {{-- Cerrar sesión --}}
+        <li>
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="dropdown-item" type="submit">Cerrar sesión</button>
+          </form>
+        </li>
+      </ul>
+    </div>
+
+    {{-- Menú móvil (solo visible en pantallas pequeñas) --}}
+    <div class="dropdown d-md-none ms-3">
+      <button class="btn p-0" id="mobileMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ri-menu-line fs-4" style="color:#7c3aed;"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileMenuBtn">
+        @if(auth()->user()->rol == 'Administrador')
+          <li><a class="dropdown-item {{ request()->routeIs('admin.dashboard') ? 'active text-purple' : '' }}"
+                 href="{{ route('admin.dashboard') }}">
+            <i class="ri-shield-line me-1"></i> Admin
+          </a></li>
+        @endif
+        <li><a class="dropdown-item {{ request()->routeIs('home') ? 'active text-purple' : '' }}"
+               href="{{ route('home') }}">
+          <i class="ri-home-line me-1"></i> Inicio
+        </a></li>
+        <li><a class="dropdown-item {{ request()->routeIs('glucosa.index') ? 'active text-purple' : '' }}"
+               href="{{ route('glucosa.index') }}">
+          <i class="ri-heart-pulse-line me-1"></i> Control Glucosa
+        </a></li>
+        <li><a class="dropdown-item {{ request()->routeIs('statistics') ? 'active text-purple' : '' }}"
+               href="{{ route('statistics') }}">
+          <i class="ri-bar-chart-line me-1"></i> Estadísticas
+        </a></li>
+        <li><a class="dropdown-item {{ request()->routeIs('recomendaciones') ? 'active text-purple' : '' }}"
+               href="{{ route('recomendaciones') }}">
+          <i class="ri-lightbulb-line me-1"></i> Recomendaciones
+        </a></li>
+        {{-- NUEVO: Editar perfil en móvil --}}
+        <li><a class="dropdown-item {{ request()->routeIs('perfil.edit') ? 'active text-purple' : '' }}"
+               href="{{ route('perfil.edit') }}">
+          <i class="ri-user-settings-line me-1"></i> Editar perfil
+        </a></li>
+        <li>
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="dropdown-item" type="submit">
+              <i class="ri-logout-box-r-line me-1"></i> Cerrar sesión
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  @else
+    {{-- Enlace login (si no está autenticado) --}}
+    <a href="{{ route('login') }}" class="login-link">
+      <i class="ri-user-line fs-5"></i> Entrar
+    </a>
+  @endauth
+</div>
+
 
         {{-- Menú desplegable móvil --}}
         @auth

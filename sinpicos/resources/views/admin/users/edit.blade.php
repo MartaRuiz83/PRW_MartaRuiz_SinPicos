@@ -1,21 +1,22 @@
-{{-- resources/views/admin/users/edit.blade.php --}}
 @extends('adminlte::page')
 
-@section('title', 'Editar Usuario')
+@section('title', request()->routeIs('perfil.edit') ? 'Editar perfil' : 'Editar usuario')
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         <div class="card shadow-sm">
-           <div class="card-header bg-gradient-warning">
-                <h3 class="card-title text-dark">Editar Usuario #{{ $user->id }}</h3>
-</div>
+            <div class="card-header bg-gradient-warning">
+                <h3 class="card-title text-dark">
+                    {{ request()->routeIs('perfil.edit') ? 'Editar mis datos' : 'Editar Usuario #' . $user->id }}
+                </h3>
+            </div>
             <div class="card-body">
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
 
-                <form action="{{ route('admin.users.update', $user) }}" method="POST">
+                <form action="{{ request()->routeIs('perfil.edit') ? route('perfil.update') : route('admin.users.update', $user) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -55,7 +56,8 @@
                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    {{-- Rol --}}
+                    {{-- Rol (solo visible para admins) --}}
+                    @unless(request()->routeIs('perfil.edit'))
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-success text-white">
@@ -73,6 +75,7 @@
                         </select>
                         @error('rol')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    @endunless
 
                     {{-- Tipo de Diabetes --}}
                     <div class="input-group mb-3">
@@ -130,7 +133,8 @@
                         <button type="submit" class="btn btn-warning">
                             <i class="fas fa-save mr-1"></i> Guardar
                         </button>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
+
+                        <a href="{{ request()->routeIs('perfil.edit') ? route('home') : route('admin.users.index') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-times mr-1"></i> Cancelar
                         </a>
                     </div>
