@@ -41,7 +41,7 @@
                         Tipo 2
                     </option>
                     <option value="Gestacional" {{ old('tipo_diabetes')=='Gestacional' ? 'selected':'' }}>
-                        Gestiacional
+                        Gestacional
                     </option>
                 </select>
                 @error('tipo_diabetes')
