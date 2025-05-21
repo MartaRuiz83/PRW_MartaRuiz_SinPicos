@@ -1,4 +1,3 @@
-{{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,17 +13,20 @@
 
   {{-- Google Font Pacifico --}}
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
   {{-- Remixicon --}}
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+
   {{-- Tus estilos propios --}}
   <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
   {{-- ECharts --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+
   {{-- SweetAlert2 --}}
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
-    /* Logo Pacifico */
     .navbar .logo-text { font-family:'Pacifico',cursive; font-size:1.5rem; color:#7c3aed; }
     .navbar .logo-img  { height:40px; width:auto; }
     .navbar { box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:.5rem 0; }
@@ -43,9 +45,7 @@
       align-items:center; justify-content:center;
       font-weight:bold; margin-right:.5rem;
     }
-    /* Ocultar el caret azul de dropdown */
     .dropdown-toggle::after { display:none !important; }
-    /* Botón Admin con hover lila */
     .admin-hover {
       border: 1px solid #7c3aed !important;
       color: #333;
@@ -84,7 +84,6 @@
           @if(auth()->user()->rol == 'Administrador')
             <a href="{{ route('admin.dashboard') }}"
                class="btn btn-sm admin-hover ms-3 {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-              <i class="ri-shield-check-line d-inline d-md-none fs-5"></i>
               <i class="ri-shield-line d-none d-md-inline me-1 fs-5"></i>
               <span class="d-none d-md-inline">Admin</span>
             </a>
@@ -108,121 +107,81 @@
         </div>
       @endif
 
-      {{-- Usuario / Entrar + menú desplegable móvil al final --}}
+      {{-- Usuario / Menú desplegable --}}
       <div class="d-flex align-items-center">
-  @auth
-    {{-- Menú desplegable de usuario (escritorio) --}}
-    <div class="dropdown">
-      <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
-         href="#" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-        <div class="initials">{{ strtoupper(substr(auth()->user()->name,0,2)) }}</div>
-        <span class="text-dark">{{ auth()->user()->name }}</span>
-        <i class="ri-arrow-down-s-line"
-           style="color:#7c3aed;font-size:1.25rem;margin-left:.5rem;"></i>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuLink">
-        {{-- NUEVO: Enlace a editar perfil --}}
-        <li>
-          <a class="dropdown-item" href="{{ route('perfil.edit') }}">
-            <i class="ri-user-settings-line me-1"></i> Editar perfil
-          </a>
-        </li>
-        {{-- Cerrar sesión --}}
-        <li>
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button class="dropdown-item" type="submit">Cerrar sesión</button>
-          </form>
-        </li>
-      </ul>
-    </div>
-
-    {{-- Menú móvil (solo visible en pantallas pequeñas) --}}
-    <div class="dropdown d-md-none ms-3">
-      <button class="btn p-0" id="mobileMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="ri-menu-line fs-4" style="color:#7c3aed;"></i>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileMenuBtn">
-        @if(auth()->user()->rol == 'Administrador')
-          <li><a class="dropdown-item {{ request()->routeIs('admin.dashboard') ? 'active text-purple' : '' }}"
-                 href="{{ route('admin.dashboard') }}">
-            <i class="ri-shield-line me-1"></i> Admin
-          </a></li>
-        @endif
-        <li><a class="dropdown-item {{ request()->routeIs('home') ? 'active text-purple' : '' }}"
-               href="{{ route('home') }}">
-          <i class="ri-home-line me-1"></i> Inicio
-        </a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('glucosa.index') ? 'active text-purple' : '' }}"
-               href="{{ route('glucosa.index') }}">
-          <i class="ri-heart-pulse-line me-1"></i> Control Glucosa
-        </a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('statistics') ? 'active text-purple' : '' }}"
-               href="{{ route('statistics') }}">
-          <i class="ri-bar-chart-line me-1"></i> Estadísticas
-        </a></li>
-        <li><a class="dropdown-item {{ request()->routeIs('recomendaciones') ? 'active text-purple' : '' }}"
-               href="{{ route('recomendaciones') }}">
-          <i class="ri-lightbulb-line me-1"></i> Recomendaciones
-        </a></li>
-        {{-- NUEVO: Editar perfil en móvil --}}
-        <li><a class="dropdown-item {{ request()->routeIs('perfil.edit') ? 'active text-purple' : '' }}"
-               href="{{ route('perfil.edit') }}">
-          <i class="ri-user-settings-line me-1"></i> Editar perfil
-        </a></li>
-        <li>
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button class="dropdown-item" type="submit">
-              <i class="ri-logout-box-r-line me-1"></i> Cerrar sesión
-            </button>
-          </form>
-        </li>
-      </ul>
-    </div>
-  @else
-    {{-- Enlace login (si no está autenticado) --}}
-    <a href="{{ route('login') }}" class="login-link">
-      <i class="ri-user-line fs-5"></i> Entrar
-    </a>
-  @endauth
-</div>
-
-
-        {{-- Menú desplegable móvil --}}
         @auth
-          <div class="dropdown d-md-none ms-3">
-            <button class="btn p-0" id="mobileMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="ri-menu-line fs-4" style="color:#7c3aed;"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileMenuBtn">
-              @if(auth()->user()->rol == 'Administrador')
-                <li><a class="dropdown-item {{ request()->routeIs('admin.dashboard') ? 'active text-purple' : '' }}"
-                       href="{{ route('admin.dashboard') }}">
-                  <i class="ri-shield-line me-1"></i> Admin
-                </a></li>
-              @endif
-              <li><a class="dropdown-item {{ request()->routeIs('home') ? 'active text-purple' : '' }}"
-                     href="{{ route('home') }}">
-                <i class="ri-home-line me-1"></i> Inicio
+        {{-- Menú usuario escritorio --}}
+        <div class="dropdown">
+          <a class="d-flex align-items-center text-decoration-none dropdown-toggle"
+             href="#" id="userMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="initials">{{ strtoupper(substr(auth()->user()->name,0,2)) }}</div>
+            <span class="text-dark">{{ auth()->user()->name }}</span>
+            <i class="ri-arrow-down-s-line"
+               style="color:#7c3aed;font-size:1.25rem;margin-left:.5rem;"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuLink">
+            <li>
+              <a class="dropdown-item" href="{{ route('perfil.edit') }}">
+                <i class="ri-user-settings-line me-1"></i> Editar perfil
+              </a>
+            </li>
+            <li>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="dropdown-item" type="submit">Cerrar sesión</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+
+        {{-- Menú móvil (único) --}}
+        <div class="dropdown d-md-none ms-3">
+          <button class="btn p-0" id="mobileMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ri-menu-line fs-4" style="color:#7c3aed;"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileMenuBtn">
+            @if(auth()->user()->rol == 'Administrador')
+              <li><a class="dropdown-item {{ request()->routeIs('admin.dashboard') ? 'active text-purple' : '' }}"
+                     href="{{ route('admin.dashboard') }}">
+                <i class="ri-shield-line me-1"></i> Admin
               </a></li>
-              <li><a class="dropdown-item {{ request()->routeIs('glucosa.index') ? 'active text-purple' : '' }}"
-                     href="{{ route('glucosa.index') }}">
-                <i class="ri-heart-pulse-line me-1"></i> Control Glucosa
-              </a></li>
-              <li><a class="dropdown-item {{ request()->routeIs('statistics') ? 'active text-purple' : '' }}"
-                     href="{{ route('statistics') }}">
-                <i class="ri-bar-chart-line me-1"></i> Estadísticas
-              </a></li>
-              <li><a class="dropdown-item {{ request()->routeIs('recomendaciones') ? 'active text-purple' : '' }}"
-                     href="{{ route('recomendaciones') }}">
-                <i class="ri-lightbulb-line me-1"></i> Recomendaciones
-              </a></li>
-            </ul>
-          </div>
+            @endif
+            <li><a class="dropdown-item {{ request()->routeIs('home') ? 'active text-purple' : '' }}"
+                   href="{{ route('home') }}">
+              <i class="ri-home-line me-1"></i> Inicio
+            </a></li>
+            <li><a class="dropdown-item {{ request()->routeIs('glucosa.index') ? 'active text-purple' : '' }}"
+                   href="{{ route('glucosa.index') }}">
+              <i class="ri-heart-pulse-line me-1"></i> Control Glucosa
+            </a></li>
+            <li><a class="dropdown-item {{ request()->routeIs('statistics') ? 'active text-purple' : '' }}"
+                   href="{{ route('statistics') }}">
+              <i class="ri-bar-chart-line me-1"></i> Estadísticas
+            </a></li>
+            <li><a class="dropdown-item {{ request()->routeIs('recomendaciones') ? 'active text-purple' : '' }}"
+                   href="{{ route('recomendaciones') }}">
+              <i class="ri-lightbulb-line me-1"></i> Recomendaciones
+            </a></li>
+            <li><a class="dropdown-item {{ request()->routeIs('perfil.edit') ? 'active text-purple' : '' }}"
+                   href="{{ route('perfil.edit') }}">
+              <i class="ri-user-settings-line me-1"></i> Editar perfil
+            </a></li>
+            <li>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="dropdown-item" type="submit">
+                  <i class="ri-logout-box-r-line me-1"></i> Cerrar sesión
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+        @else
+          <a href="{{ route('login') }}" class="login-link">
+            <i class="ri-user-line fs-5"></i> Entrar
+          </a>
         @endauth
       </div>
-
     </div>
   </nav>
 
@@ -231,7 +190,7 @@
     @yield('content')
   </div>
 
-  {{-- jQuery + DataTables JS + Bootstrap JS --}}
+  {{-- JS --}}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
@@ -239,13 +198,12 @@
 
   @stack('scripts')
 
-    {{-- FOOTER --}}
+  {{-- FOOTER --}}
   <footer class="bg-light text-center text-muted py-3 mt-auto border-top">
     <div class="container">
       <small>&copy; {{ date('Y') }} SinPicos. Proyecto desarrollado por Marta Ruiz. Todos los derechos reservados.</small>
     </div>
   </footer>
-
 
 </body>
 </html>
