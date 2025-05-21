@@ -67,11 +67,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
          ->where('date', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
          ->name('glucosa.index');
 
-    // ✅ NUEVAS RUTAS PARA PERFIL DE USUARIO
+    // ✅ Rutas para perfil de usuario
     Route::get('/perfil/editar', [ProfileController::class, 'edit'])
          ->name('perfil.edit');
     Route::put('/perfil/editar', [ProfileController::class, 'update'])
          ->name('perfil.update');
+
+    // ✅ Ruta para marcar tip como visto (disponible para cualquier usuario)
+    Route::post('/tips/showed/{tip}', function (Tip $tip) {
+        $tip->showed = true;
+        $tip->save();
+        return redirect()->route('home', ['date' => now()->format('Y-m-d')]);
+    })->name('tips.showed');
 });
 
 // 5) RUTAS DEL PANEL DE ADMIN (AdminLTE)
@@ -86,10 +93,4 @@ Route::middleware(['auth', 'verified', ControlAdmin::class])
     Route::resource('users', UserController::class);
     Route::resource('ingredients', IngredientController::class);
     Route::resource('meals', MealController::class)->except(['create', 'store']);
-
-    Route::post('/tips/showed/{tip}', function (Tip $tip) {
-        $tip->showed = true;
-        $tip->save();
-        return redirect()->route('home', ['date' => now()->format('Y-m-d')]);
-    })->name('tips.showed');
 });

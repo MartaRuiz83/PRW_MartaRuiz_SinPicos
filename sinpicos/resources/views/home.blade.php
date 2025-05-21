@@ -54,7 +54,7 @@
               </div>
               <p class="small text-muted mb-0">{{ $tip->recomendation->descripcion }}</p>
             </div>
-            <form action="{{ route('admin.tips.showed', $tip) }}"
+            <form action="{{ route('tips.showed', $tip) }}"
                   method="POST"
                   class="mt-3 text-end">
               @csrf
